@@ -1,0 +1,37 @@
+{
+  "name": "iobroker.fid-bridge",
+  "version": "0.12.5",
+  "description": "Fiducerion Bridge — Verwaltungs-UI fuer Fiducerion Core (ioBroker-basiert). TOTP-2FA, Module-Mgmt, Repository-Browser, Live-Terminal.",
+  "author": {
+    "name": "Bernd",
+    "email": "noreply@example.com"
+  },
+  "license": "MIT",
+  "main": "main.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@iobroker/adapter-core": "^3.2.0",
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  },
+  "keywords": [
+    "ioBroker",
+    "admin",
+    "fid-bridge",
+    "fiducerion",
+    "lcars"
+  ],
+  "files": [
+    "admin/",
+    "lib/",
+    "www/",
+    "main.js",
+    "io-package.json",
+    "LICENSE",
+    "README.md",
+    "update.sh"
+  ],
+  "readmeFilename": "README.md"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "tabs",
+  "i18n": true,
+  "items": {
+    "tabAccess": {
+      "type": "panel",
+      "label": "Zugriff",
+      "items": {
+        "_h1": { "type": "header", "text": "Eigener Port", "size": 3, "newLine": true },
+        "enableOwnPort": { "type": "checkbox", "label": "Eigenen Webserver starten", "newLine": true, "sm": 12 },
+        "ownPort":  { "type": "number", "label": "Port", "min": 1, "max": 65535, "newLine": true, "sm": 4, "hidden": "!data.enableOwnPort" },
+        "bindHost": { "type": "text", "label": "Bind-Adresse", "help": "0.0.0.0 = alle, 127.0.0.1 = nur lokal", "sm": 8, "hidden": "!data.enableOwnPort" }
+      }
+    },
+    "tabSecurity": {
+      "type": "panel",
+      "label": "Sicherheit",
+      "items": {
+        "_w": { "type": "staticText", "text": "Token-Auth und TOTP-2FA. Letzteres wird komfortabler ueber den Bridge-Settings-Tab eingerichtet (QR-Code, Activate-Workflow).", "newLine": true },
+        "requireAuth": { "type": "checkbox", "label": "Token-Authentifizierung erforderlich", "newLine": true, "sm": 12 },
+        "authToken": { "type": "password", "label": "Auth-Token", "help": "Leer = wird beim Start generiert und ins Log geschrieben.", "newLine": true, "sm": 12, "hidden": "!data.requireAuth" },
+        "_h2": { "type": "header", "text": "Host-Kommandos", "size": 3, "newLine": true },
+        "allowExec": { "type": "checkbox", "label": "Host-Kommandos erlauben (Module installieren/entfernen, Instanzen anlegen)", "newLine": true, "sm": 12 }
+      }
+    },
+    "tabUi": {
+      "type": "panel",
+      "label": "UI",
+      "items": {
+        "defaultTheme": {
+          "type": "select",
+          "label": "Standard-Theme",
+          "options": [
+            { "value": "lcars", "label": "LCARS" },
+            { "value": "slate", "label": "Slate" }
+          ],
+          "newLine": true, "sm": 6
+        },
+        "defaultStartTab": {
+          "type": "select",
+          "label": "Start-Tab",
+          "options": [
+            { "value": "dashboard", "label": "Übersicht" },
+            { "value": "services",  "label": "Services" },
+            { "value": "modules",   "label": "Module" },
+            { "value": "repo",      "label": "Repository" },
+            { "value": "objects",   "label": "Datenpunkte" },
+            { "value": "logs",      "label": "Protokoll" }
+          ],
+          "newLine": true, "sm": 6
+        },
+        "logTailLines":    { "type": "number", "label": "Log-Tail",       "min": 50,  "max": 2000, "newLine": true, "sm": 4 },
+        "logHistorySize":  { "type": "number", "label": "Live-Log-Puffer", "min": 100, "max": 5000, "sm": 4 },
+        "objectCacheTtlSec": { "type": "number", "label": "Object-Cache TTL (s)", "min": 0, "max": 600, "sm": 4 },
+        "_hNotif": { "type": "header", "text": "Notifications", "size": 3, "newLine": true },
+        "disableNotifications": { "type": "checkbox", "label": "Host-Notifications-Abfrage deaktivieren (Fallback wenn js-controller crasht)", "help": "Aktivieren, falls beim Aufruf der Übersicht der js-controller-Prozess crasht.", "newLine": true, "sm": 12 }
+      }
+    }
+  }
+}

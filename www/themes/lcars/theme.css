@@ -1,0 +1,111 @@
+/* ===========================================================
+ * LCARS Theme  -  Star Trek LCARS Look (bunt)
+ *
+ * Variablen-Setup + theme-spezifische Klassen.
+ * Variationen per nth-child fuer maximalen Regenbogen-Look.
+ * ===========================================================
+ */
+:root {
+  --ma-bg:           #000000;
+  --ma-bg-2:         #0a0a0a;
+  --ma-panel:        #0e0e10;
+  --ma-panel-2:      #15151a;
+  --ma-border:       rgba(255,153,102,0.18);
+  --ma-border-strong:rgba(255,153,102,0.45);
+
+  --ma-text:         #ffeecc;
+  --ma-muted:        #998877;
+  --ma-dim:          #665544;
+
+  --ma-accent:       #ff9966;
+  --ma-accent-2:     #9999ff;
+
+  --ma-ok:           #66cc99;
+  --ma-warn:         #ffcc66;
+  --ma-bad:          #ff5544;
+  --ma-info:         #6699cc;
+
+  --ma-radius:       4px;
+  --ma-radius-lg:    24px;
+  --ma-radius-pill:  999px;
+
+  --ma-font:         'Antonio', 'Helvetica Neue', Arial, sans-serif;
+  --ma-font-display: 'Antonio', 'Helvetica Neue', Arial, sans-serif;
+  --ma-letter:       0.5px;
+  --ma-text-transform: uppercase;
+
+  --ma-shadow:       none;
+}
+
+body { font-weight: 500; }
+
+/* LCARS Color-Palette */
+.ma-tab { border-radius: 0 24px 24px 0; border-top: 0; border-right: 0; border-bottom: 0; border-left: 8px solid var(--ma-accent); background: var(--ma-panel); }
+.ma-tab.active { background: var(--ma-accent); color: #000; border-left-color: var(--ma-warn); }
+.ma-tab:hover { filter: brightness(1.08); }
+
+.ma-tab:nth-child(8n+1) { border-left-color: #ff9966; }
+.ma-tab:nth-child(8n+2) { border-left-color: #ffcc66; }
+.ma-tab:nth-child(8n+3) { border-left-color: #cc99cc; }
+.ma-tab:nth-child(8n+4) { border-left-color: #9999ff; }
+.ma-tab:nth-child(8n+5) { border-left-color: #6699cc; }
+.ma-tab:nth-child(8n+6) { border-left-color: #ff99cc; }
+.ma-tab:nth-child(8n+7) { border-left-color: #66cc99; }
+.ma-tab:nth-child(8n+8) { border-left-color: #ffaa44; }
+
+.ma-tab:nth-child(8n+1).active { background: #ff9966; }
+.ma-tab:nth-child(8n+2).active { background: #ffcc66; }
+.ma-tab:nth-child(8n+3).active { background: #cc99cc; }
+.ma-tab:nth-child(8n+4).active { background: #9999ff; }
+.ma-tab:nth-child(8n+5).active { background: #6699cc; }
+.ma-tab:nth-child(8n+6).active { background: #ff99cc; }
+.ma-tab:nth-child(8n+7).active { background: #66cc99; }
+.ma-tab:nth-child(8n+8).active { background: #ffaa44; }
+
+.ma-brand { border-radius: var(--ma-radius-pill); padding: 12px 16px; }
+
+/* Card-Bracket variiert nach Position */
+.ma-card { border-radius: 0 var(--ma-radius-lg) var(--ma-radius-lg) 0; }
+.ma-card-head { background: var(--ma-bg); border-bottom-color: var(--ma-accent); }
+.ma-card-bracket { width: 28px; background: var(--ma-accent); border-radius: 0 var(--ma-radius-lg) var(--ma-radius-lg) 0; margin-right: 6px; }
+.ma-card-title { color: var(--ma-accent); }
+
+.ma-tabpage > .ma-card:nth-child(4n+1) .ma-card-bracket { background: #ff9966; }
+.ma-tabpage > .ma-card:nth-child(4n+2) .ma-card-bracket { background: #cc99cc; }
+.ma-tabpage > .ma-card:nth-child(4n+3) .ma-card-bracket { background: #9999ff; }
+.ma-tabpage > .ma-card:nth-child(4n+4) .ma-card-bracket { background: #66cc99; }
+.ma-tabpage > .ma-card:nth-child(4n+1) .ma-card-title { color: #ff9966; }
+.ma-tabpage > .ma-card:nth-child(4n+2) .ma-card-title { color: #cc99cc; }
+.ma-tabpage > .ma-card:nth-child(4n+3) .ma-card-title { color: #9999ff; }
+.ma-tabpage > .ma-card:nth-child(4n+4) .ma-card-title { color: #66cc99; }
+
+/* Buttons - LCARS Pille */
+.ma-btn { border-radius: var(--ma-radius-pill); }
+.ma-btn-ghost { background: var(--ma-panel); border: 1px solid var(--ma-accent); color: var(--ma-accent); }
+
+/* Sidebar mit hartem Schwarz */
+.ma-side { background: #000; border-right: 0; }
+
+/* Topbar - gestreifte LCARS-Bars */
+.ma-top-seg { border-radius: var(--ma-radius-pill); height: 18px; }
+.ma-top-seg-1 { background: linear-gradient(90deg, #ff9966 0%, #ffcc66 50%, #cc99cc 100%); }
+.ma-top-seg-2 { background: linear-gradient(90deg, #9999ff 0%, #6699cc 50%, #66cc99 100%); }
+
+/* Stats wie LCARS-Bloecke mit farbigem Border */
+.ma-stat { border-radius: 0 24px 24px 0; border-left: 5px solid var(--ma-accent-2); }
+.ma-stat:nth-child(4n+1) { border-left-color: #ff9966; }
+.ma-stat:nth-child(4n+2) { border-left-color: #ffcc66; }
+.ma-stat:nth-child(4n+3) { border-left-color: #cc99cc; }
+.ma-stat:nth-child(4n+4) { border-left-color: #6699cc; }
+.ma-stat:nth-child(4n+1) .ma-stat-value { color: #ff9966; }
+.ma-stat:nth-child(4n+2) .ma-stat-value { color: #ffcc66; }
+.ma-stat:nth-child(4n+3) .ma-stat-value { color: #cc99cc; }
+.ma-stat:nth-child(4n+4) .ma-stat-value { color: #6699cc; }
+
+/* Script-Tree akzentuiert in LCARS-Farben */
+.scr-folder-name { color: var(--ma-accent); }
+.scr-folder-count { background: var(--ma-panel-2); color: var(--ma-warn); }
+.scr-script.scr-on  { border-left-color: #66cc99; background: linear-gradient(90deg, rgba(102,204,153,0.06) 0%, transparent 40%); }
+.scr-script.scr-off { border-left-color: rgba(255,238,204,0.18); }
+.scr-pill-on  { background: #66cc99; color: #000; }
+.scr-pill-off { background: rgba(255,238,204,0.18); color: var(--ma-muted); }

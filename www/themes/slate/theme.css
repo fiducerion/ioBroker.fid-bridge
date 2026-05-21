@@ -1,0 +1,104 @@
+/* ===========================================================
+ * Slate Theme — moderner Dark-Look mit echten Farbakzenten
+ * ===========================================================
+ */
+:root {
+  --ma-bg:           #0f1216;
+  --ma-bg-2:         #161b22;
+  --ma-panel:        #1a2029;
+  --ma-panel-2:      #222933;
+  --ma-border:       rgba(255,255,255,0.07);
+  --ma-border-strong:rgba(255,255,255,0.18);
+
+  --ma-text:         #e8ecf2;
+  --ma-muted:        #8d97a3;
+  --ma-dim:          #525a66;
+
+  --ma-accent:       #5b9dff;
+  --ma-accent-2:     #b07cff;
+
+  --ma-ok:           #5ad19a;
+  --ma-warn:         #f0c75e;
+  --ma-bad:          #ef6363;
+  --ma-info:         #6abede;
+
+  --ma-radius:       8px;
+  --ma-radius-lg:    12px;
+  --ma-radius-pill:  999px;
+
+  --ma-font:         'Inter', system-ui, sans-serif;
+  --ma-font-display: 'Inter', system-ui, sans-serif;
+  --ma-letter:       0px;
+  --ma-text-transform: none;
+}
+
+/* Tab-Akzent-Strich links variiert nach Position */
+.ma-tab { border-radius: var(--ma-radius); background: transparent; border: 1px solid var(--ma-border); color: var(--ma-text); border-left: 3px solid var(--ma-accent); padding-left: 10px; }
+.ma-tab.active { background: var(--ma-accent); color: #0a0d12; border-color: var(--ma-accent); }
+.ma-tab-num { color: var(--ma-muted); font-size: 11px; }
+.ma-tab.active .ma-tab-num { color: rgba(0,0,0,0.6); }
+
+.ma-tab:nth-child(8n+1) { border-left-color: #5b9dff; }
+.ma-tab:nth-child(8n+2) { border-left-color: #b07cff; }
+.ma-tab:nth-child(8n+3) { border-left-color: #ff7ab3; }
+.ma-tab:nth-child(8n+4) { border-left-color: #ffa45c; }
+.ma-tab:nth-child(8n+5) { border-left-color: #f0c75e; }
+.ma-tab:nth-child(8n+6) { border-left-color: #5ad19a; }
+.ma-tab:nth-child(8n+7) { border-left-color: #6abede; }
+.ma-tab:nth-child(8n+8) { border-left-color: #ef9b9b; }
+
+.ma-tab:nth-child(8n+1).active { background: #5b9dff; border-color: #5b9dff; }
+.ma-tab:nth-child(8n+2).active { background: #b07cff; border-color: #b07cff; }
+.ma-tab:nth-child(8n+3).active { background: #ff7ab3; border-color: #ff7ab3; }
+.ma-tab:nth-child(8n+4).active { background: #ffa45c; border-color: #ffa45c; }
+.ma-tab:nth-child(8n+5).active { background: #f0c75e; border-color: #f0c75e; }
+.ma-tab:nth-child(8n+6).active { background: #5ad19a; border-color: #5ad19a; }
+.ma-tab:nth-child(8n+7).active { background: #6abede; border-color: #6abede; }
+.ma-tab:nth-child(8n+8).active { background: #ef9b9b; border-color: #ef9b9b; }
+
+.ma-brand { background: linear-gradient(135deg, #5b9dff, #b07cff); color: #0a0d12; border-radius: var(--ma-radius); }
+
+/* Card-Brackets in variierenden Farben, Header-Titel folgt */
+.ma-card-bracket { width: 4px; background: var(--ma-accent); border-radius: 2px; margin-right: 6px; }
+
+.ma-tabpage > .ma-card:nth-child(4n+1) .ma-card-bracket { background: #5b9dff; }
+.ma-tabpage > .ma-card:nth-child(4n+2) .ma-card-bracket { background: #b07cff; }
+.ma-tabpage > .ma-card:nth-child(4n+3) .ma-card-bracket { background: #5ad19a; }
+.ma-tabpage > .ma-card:nth-child(4n+4) .ma-card-bracket { background: #ffa45c; }
+.ma-tabpage > .ma-card:nth-child(4n+1) .ma-card-title { color: #5b9dff; }
+.ma-tabpage > .ma-card:nth-child(4n+2) .ma-card-title { color: #b07cff; }
+.ma-tabpage > .ma-card:nth-child(4n+3) .ma-card-title { color: #5ad19a; }
+.ma-tabpage > .ma-card:nth-child(4n+4) .ma-card-title { color: #ffa45c; }
+
+/* TopBar mit Gradient-Pillen */
+.ma-top-seg-1 { background: linear-gradient(90deg, #5b9dff, #b07cff); }
+.ma-top-seg-2 { background: linear-gradient(90deg, #ff7ab3, #ffa45c); }
+
+/* Stats mit farbigem Linksrand und Werten in Akzentfarbe */
+.ma-stat { border-left: 4px solid var(--ma-accent); }
+.ma-stat:nth-child(4n+1) { border-left-color: #5b9dff; }
+.ma-stat:nth-child(4n+2) { border-left-color: #b07cff; }
+.ma-stat:nth-child(4n+3) { border-left-color: #5ad19a; }
+.ma-stat:nth-child(4n+4) { border-left-color: #6abede; }
+.ma-stat:nth-child(4n+1) .ma-stat-value { color: #5b9dff; }
+.ma-stat:nth-child(4n+2) .ma-stat-value { color: #b07cff; }
+.ma-stat:nth-child(4n+3) .ma-stat-value { color: #5ad19a; }
+.ma-stat:nth-child(4n+4) .ma-stat-value { color: #6abede; }
+
+/* Status-Pillen leuchtender */
+.ma-pill-ok   { background: #5ad19a; color: #07251a; box-shadow: 0 0 0 1px rgba(90,209,154,0.3) inset; }
+.ma-pill-warn { background: #f0c75e; color: #2a1e00; box-shadow: 0 0 0 1px rgba(240,199,94,0.3) inset; }
+.ma-pill-bad  { background: #ef6363; color: #2a0808; box-shadow: 0 0 0 1px rgba(239,99,99,0.3) inset; }
+.ma-pill-info { background: #6abede; color: #00222b; box-shadow: 0 0 0 1px rgba(106,190,222,0.3) inset; }
+
+/* Buttons */
+.ma-btn { background: linear-gradient(135deg, #b07cff, #5b9dff); }
+.ma-btn:hover { filter: brightness(1.12); }
+
+/* Script-Tree-Akzente */
+.scr-folder-name { color: var(--ma-accent); }
+.scr-folder-count { background: rgba(91,157,255,0.15); color: var(--ma-accent); }
+.scr-script.scr-on  { border-left-color: #5ad19a; background: linear-gradient(90deg, rgba(90,209,154,0.07) 0%, transparent 40%); }
+.scr-script.scr-off { border-left-color: rgba(232,236,242,0.12); }
+.scr-pill-on  { background: #5ad19a; color: #07251a; }
+.scr-pill-off { background: rgba(232,236,242,0.12); color: var(--ma-muted); }

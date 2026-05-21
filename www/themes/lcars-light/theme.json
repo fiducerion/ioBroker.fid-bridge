@@ -1,0 +1,6 @@
+{
+  "label": "LCARS Light",
+  "description": "LCARS als helle Variante mit weissem Hintergrund",
+  "dark": false,
+  "accent": "#cc6633"
+}

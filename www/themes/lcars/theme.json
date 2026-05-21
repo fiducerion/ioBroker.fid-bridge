@@ -1,0 +1,10 @@
+{
+  "id": "lcars",
+  "label": "LCARS",
+  "description": "Star Trek inspiriertes Theme mit Elbow-Brackets und kraeftigen Farben",
+  "author": "MiniAdmin",
+  "version": "1.0.0",
+  "dark": true,
+  "accent": "#ff9966",
+  "preview": "preview.png"
+}

@@ -1,0 +1,291 @@
+{
+  "common": {
+    "name": "fid-bridge",
+    "version": "0.12.5",
+    "news": {
+      "0.12.5": {
+        "en": "Hotfix install-bridge.sh - the new tarball/watchdog block in 0.12.3/0.12.4 used 'grn' as color helper but the bridge installer only defines 'green' (cross-adapter inconsistency between smartlife and bridge installers). The installer crashed mid-install. Added grn as alias for green.",
+        "de": "Hotfix install-bridge.sh - der neue Tarball/Watchdog-Block in 0.12.3/0.12.4 nutzte 'grn' als Color-Helper, aber der Bridge-Installer definiert nur 'green' (Cross-Adapter-Inkonsistenz zwischen smartlife- und bridge-Installer). Der Installer ist mitten in der Installation abgebrochen. grn als Alias fuer green hinzugefuegt."
+      },
+      "0.12.4": {
+        "en": "Watchdog loop prevention like in fid-smartlife 0.5.3. Self-check no longer auto-triggers the watchdog. Watchdog does NO npm install and NO auto-restart anymore, only restores files with 1h cooldown. Cron frequency reduced to 1h. If node_modules is destroyed: manual 'bash install-bridge.sh'.",
+        "de": "Watchdog-Loop-Verhinderung wie in fid-smartlife 0.5.3. Self-Check triggert den Watchdog NICHT mehr automatisch. Watchdog macht KEIN npm install mehr und KEIN auto-restart, restauriert nur Files mit 1h-Cooldown. Cron-Frequenz auf 1h gesenkt. Falls node_modules zerstoert ist: manuell 'bash install-bridge.sh'."
+      },
+      "0.12.3": {
+        "en": "Reboot resistance hardened. After an OS update (libgs upgrade triggered apt hooks that ran npm-prune on /opt/iobroker), node_modules content for all three Fiducerion adapters was partially deleted (iconv-lite/../encodings missing, www/index.html missing). js-controller then tried 'npm install fid-bridge@0.12.2' from the npm registry, which obviously fails because the adapter isn't published there - and the adapter was removed from the active list. Three protection layers added: (1) Self-Check in onReady() at adapter start: if www/index.html or other critical files are missing, the adapter terminates immediately with a clear error log AND auto-triggers the watchdog. No more endless ENOENT log floods. (2) The installer now creates a real npm-compatible tarball at /opt/iobroker/.fid-bridge-tarball.tgz via 'npm pack' and sets common.installedFrom=file:<tarball>. js-controller can now actually heal itself by running 'npm install <tarball>' instead of failing on the unknown package name. (3) Cron watchdog at /opt/iobroker/.fid-bridge-watchdog.sh runs every 10 minutes, checks for the sentinel file www/index.html and if missing, extracts the tarball, runs npm install --production, and restarts the adapter. Recovery is fully automatic without user intervention. Watchdog logs to /opt/iobroker/log/fid-bridge-watchdog.log.",
+        "de": "Reboot-Resistenz gehaertet. Nach einem OS-Update (libgs-Upgrade triggerte apt-Hooks die npm-prune auf /opt/iobroker laufen liessen) wurde node_modules-Inhalt aller drei Fiducerion-Adapter teilweise geloescht (iconv-lite/../encodings fehlt, www/index.html fehlt). js-controller hat dann 'npm install fid-bridge@0.12.2' aus der npm-Registry versucht, was natuerlich fehlschlaegt weil der Adapter dort nicht veroeffentlicht ist - und der Adapter wurde aus der aktiven Liste entfernt. Drei Schutz-Schichten eingebaut: (1) Self-Check in onReady() beim Adapter-Start: wenn www/index.html oder andere kritische Files fehlen, terminiert der Adapter sofort mit klarem Error-Log UND triggert automatisch den Watchdog. Keine endlosen ENOENT-Log-Fluten mehr. (2) Der Installer erzeugt jetzt ein echtes npm-kompatibles Tarball unter /opt/iobroker/.fid-bridge-tarball.tgz via 'npm pack' und setzt common.installedFrom=file:<tarball>. js-controller kann sich jetzt selber heilen indem er 'npm install <tarball>' ausfuehrt statt am unbekannten Paketnamen zu scheitern. (3) Cron-Watchdog unter /opt/iobroker/.fid-bridge-watchdog.sh laeuft alle 10 Minuten, prueft die Sentinel-Datei www/index.html und falls fehlend, extrahiert das Tarball, fuehrt npm install --production aus und startet den Adapter neu. Wiederherstellung voll automatisch ohne User-Interaktion. Watchdog-Logs nach /opt/iobroker/log/fid-bridge-watchdog.log."
+      },
+      "0.12.2": {
+        "en": "New logo (shield with bridge symbol matching the Fiducerion family of adapters). No functional changes.",
+        "de": "Neues Logo (Schild mit Bruecken-Symbol passend zur Fiducerion-Adapter-Familie). Keine funktionalen Aenderungen."
+      },
+      "0.12.1": {
+        "en": "Config-Editor now supports jsonConfig type:table. Adapter configurations that ship table widgets (like fid-iot's mapper rules) are now editable directly in the bridge - row-by-row, with Add and Delete buttons, supporting text/select/checkbox/number columns. Previously the bridge fell back to a read-only display with a 'not yet supported' message.",
+        "de": "Config-Editor unterstuetzt jetzt jsonConfig type:table. Adapter-Konfigurationen mit Table-Widgets (z.B. die Mapper-Regeln in fid-iot) sind jetzt direkt im Bridge editierbar - zeilenweise, mit Hinzufuegen- und Loeschen-Buttons, fuer text/select/checkbox/number-Spalten. Bisher hatte der Bridge nur eine read-only Anzeige mit 'noch nicht unterstuetzt'-Meldung gezeigt."
+      },
+      "0.12.0": {
+        "en": "Adapter renamed from iobroker.fiducerion-bridge to iobroker.fid-bridge. Shorter, easier to type. Migration: the previous adapter instance must be deinstalled (settings will be lost). Settings to reconfigure: TOTP secret, custom links, user accounts, default theme. The Analyzer history is stored under the new path 0_userdata.0.fid-bridge.analyzer.history (the previous path 0_userdata.0.fiducerion-bridge.analyzer.history can be deleted manually if you wish). Also: the installer is now called install-bridge.sh (instead of update.sh) so it can no longer be confused with the smartlife installer.",
+        "de": "Adapter umbenannt von iobroker.fiducerion-bridge auf iobroker.fid-bridge. Kuerzer, einfacher zu tippen. Migration: die vorherige Adapter-Instance muss deinstalliert werden (Settings gehen verloren). Settings die du neu eintragen musst: TOTP-Secret, Custom-Links, User-Accounts, Standard-Theme. Die Analyzer-History wird jetzt unter 0_userdata.0.fid-bridge.analyzer.history gespeichert (der alte Pfad 0_userdata.0.fiducerion-bridge.analyzer.history kann manuell geloescht werden). Ausserdem: der Installer heisst jetzt install-bridge.sh (statt update.sh) und kann nicht mehr mit dem Smartlife-Installer verwechselt werden."
+      },
+      "0.11.1": {
+        "en": "Fix: Log-tab no longer updates live since v0.11.0. Cause: both the server (for the Logs-tab WebSocket) and the analyzer collector were registering their own 'log' event listener on the adapter. Some js-controller versions only allow ONE active log-listener per adapter, the second one displaces the first. Fix: only ONE central listener in main.js now, which feeds both server.broadcastLog (Logs-tab) and logCollector.ingestEntry (Analyzer).",
+        "de": "Fix: Log-Tab aktualisiert nicht mehr live seit v0.11.0. Ursache: sowohl der Server (fuer das Logs-Tab WebSocket) als auch der Analyzer-Collector haben jeweils ihren eigenen 'log'-Listener am Adapter registriert. Manche js-controller-Versionen erlauben nur EINEN aktiven Log-Listener pro Adapter, der zweite verdraengt den ersten. Fix: nur noch EIN zentraler Listener in main.js, der sowohl server.broadcastLog (Logs-Tab) als auch logCollector.ingestEntry (Analyzer) bedient."
+      },
+      "0.11.0": {
+        "en": "New ANALYZER tab (position 12, before SYSTEM) - replaces the standalone LogMonitor and LogWatcher scripts. The Bridge now uses requireLog(true) to capture every error/warning live from the js-controller, holds a 48h ringbuffer of raw events in RAM and rolls the daily aggregate (errors, warnings, top patterns, adapter/script counts) into a 7-day history that survives Bridge restarts (persisted in 0_userdata.0.fid-bridge.analyzer.history). On Bridge start the today's logfile is backfilled so events from before the Bridge was started don't get lost. Today's view shows Top Errors, Top Warnings and the last 100 events. Yesterday shows the persisted aggregate (errors/warnings/groups). 7-day view shows a bar chart with errors/warnings per day. Every entry and every section has a Markdown-copy button. Yesterday and 7-day are collapsed by default. The Logs tab now colorizes lines by level (error red, warn orange, info white, debug grey) and adds a per-adapter color tag (deterministic hash to HSL).",
+        "de": "Neuer ANALYZER-Tab (Position 12, vor SYSTEM) - ersetzt die einzelnen LogMonitor- und LogWatcher-Skripte. Die Bridge nutzt jetzt requireLog(true) und faengt jeden Error/Warning live vom js-controller ab, haelt einen 48h-Ringbuffer der Roh-Events im RAM und rollt die Tages-Aggregate (Errors, Warnings, Top-Patterns, Adapter/Skript-Counts) in eine 7-Tages-Historie die einen Bridge-Restart ueberlebt (persistiert in 0_userdata.0.fid-bridge.analyzer.history). Beim Bridge-Start wird die heutige Logdatei nachgeladen, damit Events vor dem Bridge-Start nicht verloren gehen. Heute-Ansicht zeigt Top Errors, Top Warnings und die letzten 100 Events. Gestern zeigt die persistierten Aggregate. 7-Tage-Ansicht zeigt Balkendiagramm. Jeder Eintrag und jede Sektion mit Markdown-Copy-Button. Gestern und 7-Tage default zugeklappt. Log-Tab faerbt Zeilen jetzt nach Level (Error rot, Warn orange, Info weiss, Debug grau) und vergibt pro Adapter einen Farb-Tag (deterministischer Hash zu HSL)."
+      },
+      "0.10.5": {
+        "en": "update.sh now has a RECOVERY mode that handles the case where the Object-DB still has the adapter but the node_modules folder is gone (typical after Debian / npm cleanups). In that case files are restored from the ZIP and installedVersion is set in the Object-DB so js-controller stops trying to npm-install the adapter from the registry.",
+        "de": "update.sh hat jetzt einen RECOVERY-Modus fuer den Fall dass die Object-DB den Adapter kennt aber der node_modules-Ordner weg ist (typisch nach Debian / npm Cleanups). In dem Fall werden die Files aus dem ZIP wiederhergestellt und installedVersion in der Object-DB gesetzt, sodass js-controller nicht mehr versucht den Adapter aus der Registry zu installieren."
+      },
+      "0.10.4": {
+        "en": "Datapoint browser layout: tree column now takes 2/3 of the width (was 50/50) and uses calc(100vh - 230px) height instead of capped 60vh - much more room. State values are now shown inline in the tree next to each state-row (boolean true/false in green/red, numbers in blue, with unit suffix where defined). Values auto-refresh every 5s while the tab is active and flash yellow briefly on change.",
+        "de": "Datenpunkte-Layout: Baum-Spalte nimmt jetzt 2/3 der Breite ein (war 50/50) und nutzt calc(100vh - 230px) Hoehe statt der gedeckelten 60vh - viel mehr Platz. State-Werte werden jetzt inline im Baum neben jeder State-Zeile angezeigt (boolean true/false in gruen/rot, Zahlen in blau, mit Einheit dahinter wo definiert). Werte aktualisieren sich alle 5 Sekunden automatisch waehrend der Tab aktiv ist und blinken kurz gelb bei Aenderung."
+      },
+      "0.10.3": {
+        "en": "Mobile-friendly layout: at screens ≤768px the sidebar becomes an off-canvas drawer that slides in from the left. A hamburger button (top-left, fixed position) toggles it, swipe from the left edge opens, swipe-left closes. Tab clicks auto-close the drawer. ESC and browser back also close. Topbar compacts (logo segments hidden, time hidden, just hamburger + title + 🔍). Stats-strip and dashboard stats-bar use 2 columns on tablet, 1 column on phone-portrait. Modals expand to 96vw on mobile. Tables get tighter padding.",
+        "de": "Mobile-Layout: ab Bildschirmen ≤768px wird die Sidebar zum Off-Canvas-Drawer der von links reinslidet. Hamburger-Button oben links (fixed) toggelt, Swipe vom linken Bildschirmrand oeffnet, Swipe nach links schliesst. Tab-Klicks schliessen automatisch. ESC und Browser-Zurueck schliessen ebenfalls. Topbar wird kompakt (Logo-Segmente ausgeblendet, Uhrzeit ausgeblendet, nur Hamburger + Titel + 🔍). Stats-Strip und Dashboard-Statsbar nutzen 2 Spalten auf Tablet, 1 Spalte auf Handy-Hochformat. Modals nehmen 96vw ein. Tabellen kompakter."
+      },
+      "0.10.2": {
+        "en": "HistoryJson-filter rewritten: reads now directly from 0_userdata.0.HistoryJson._meta.discoveredConfig that HistoryJson v1.1.x persists on every discovery run - the JSON object's keys ARE the logged datapoints. Fallback if the meta-DP is missing: scans common.custom['history.0'] (same source the script uses internally). Source-code parsing removed - way more accurate now. The dropdown got reordered: HistoryJson on top because that's the most precise filter for your setup.",
+        "de": "HistoryJson-Filter neu geschrieben: liest jetzt direkt aus 0_userdata.0.HistoryJson._meta.discoveredConfig den HistoryJson v1.1.x bei jedem Discovery-Lauf persistiert - die Keys des JSON-Objects SIND die geloggten Datenpunkte. Fallback falls der Meta-DP fehlt: scannt common.custom['history.0'] (dieselbe Quelle die das Skript intern nutzt). Source-Code-Parsing entfernt - viel praeziser. Das Dropdown ist umsortiert: HistoryJson zuoberst weil das fuer dein Setup der praeziseste Filter ist."
+      },
+      "0.10.1": {
+        "en": "Per-script export button on each row in Scripts tab (⤓ icon next to Editor/Toggle). Script-editor: 'Kopieren' and 'Einfügen' buttons in the toolbar — Paste cleans iOS Smart Quotes automatically so iPad copy-paste of code works without breaking apostrophes. New special filter 'mit historyjson-Logging (User-Script)' that finds datapoints logged by any user script with 'historyjson' in its name (auto-detected from source-code analysis, with bekannten Top-Level-Namespaces).",
+        "de": "Einzelner Export-Button pro Automation im Scripts-Tab (⤓ neben Editor/Toggle). Script-Editor: 'Kopieren' und 'Einfuegen' Buttons in der Toolbar - Einfuegen bereinigt iOS Smart Quotes automatisch, sodass iPad-Copy-Paste von Code ohne kaputte Apostrophe funktioniert. Neuer Spezial-Filter 'mit historyjson-Logging (User-Script)' der Datenpunkte findet die von einer User-Automation mit 'historyjson' im Namen geloggt werden (automatisch aus Source-Code-Analyse, mit bekannten Top-Level-Namespaces)."
+      },
+      "0.10.0": {
+        "en": "Three new features: (1) Users & Groups tab - CRUD for system.user.* and system.group.*, password change with PBKDF2-SHA256 hashing matching ioBroker's format, member assignment per group. (2) Global search modal (press '/' anywhere or click the 🔍 button in the top bar) - searches datapoints, automations (including source code), services, rooms and functions in one go, with categorized results, keyboard navigation (arrow keys + Enter) and smart jump targets per category. (3) Datapoint browser: new 'Spezial' filter dropdown with 'mit history-Logging', 'mit influxdb-Logging', 'mit sql-Logging', 'mit irgendeinem Custom', 'nur schreibbar', and role patterns (switch.*, value.temperature, level.*, indicator.*, button, sensor.*).",
+        "de": "Drei neue Features: (1) Benutzer-Tab - Anlegen, bearbeiten, loeschen von system.user.* und system.group.*, Passwoerter mit PBKDF2-SHA256 im ioBroker-Format, Mitglieder pro Gruppe zuweisen. (2) Globale Suche - Taste '/' irgendwo oder Klick auf 🔍 in der Topbar - sucht ueber Datenpunkte, Automationen (inkl. Source-Code), Services, Raeume und Funktionen in einem Rutsch, mit Kategorie-Badges, Tastatur-Navigation (Pfeile + Enter) und intelligenten Sprungzielen pro Kategorie. (3) Datenpunkte-Tab: neuer Spezial-Filter mit 'mit history-Logging', 'mit influxdb-Logging', 'mit sql-Logging', 'mit irgendeinem Custom', 'nur schreibbar', Rollen-Mustern (switch.*, value.temperature, level.*, indicator.*, button, sensor.*)."
+      },
+      "0.9.2": {
+        "en": "TOTP migration from miniadmin removed - it didn't work reliably and adds complexity. Just re-setup 2FA in the new Bridge. Rooms and Functions cards are now collapsible (default collapsed) with member counter. RAM display fixed: js-controller writes freemem in MB but totalmem in Bytes - the backend now normalizes both to Bytes so used/total are correct. Datapoint browser is now a proper collapsible tree grouped by dots, similar to the scripts tree. Top-level folders collapsed by default, search auto-expands to show matches.",
+        "de": "TOTP-Migration aus miniadmin entfernt - sie hat nicht zuverlaessig funktioniert und macht das Setup nur komplizierter. Bitte 2FA in der neuen Bridge einmal neu einrichten. Raeume und Funktionen-Karten sind jetzt klappbar (default zugeklappt) mit Mitglieder-Zaehler. RAM-Anzeige gefixt: js-controller schreibt freemem in MB aber totalmem in Bytes - das Backend normalisiert beides auf Bytes damit verwendet/gesamt korrekt sind. Datenpunkte-Browser ist jetzt ein richtiger klappbarer Baum nach Punkten gruppiert, aehnlich wie der Scripts-Baum. Oberste Ebene default zugeklappt, Suche klappt automatisch auf um Treffer zu zeigen."
+      },
+      "0.9.1": {
+        "en": "TOTP migrate-button now ALWAYS shown in settings (even when no miniadmin secret found, with explanation), so you can manually trigger or see why migration didn't happen. HTML responses now sent with strict no-cache headers - this fixes the Safari/iPad issue where ?v= cache-busting on JS/CSS didn't take effect because the HTML itself was stale.",
+        "de": "TOTP-Migrate-Button wird jetzt IMMER in den Einstellungen angezeigt (auch wenn kein miniadmin-Secret gefunden wurde, mit Erklaerung), so dass du manuell triggern kannst und siehst warum die Migration nicht ging. HTML-Antworten werden jetzt mit strikten no-cache-Headern ausgeliefert - das fixt das Safari/iPad-Problem dass ?v= Cache-Busting auf JS/CSS nicht griff weil das HTML selbst veraltet war."
+      },
+      "0.9.0": {
+        "en": "Fixed auto-migration of TOTP-Secret from old miniadmin adapter (this.config was not refreshed after the patch). New manual migrate-button in Settings if you still have miniadmin.0 around. Restore: upload backup file (up to ~110 MB), restore via 'iobroker restore' with live terminal. Per-file restore and delete buttons in the SYSTEM backup list. Object export/import: from the object browser, export any sub-tree (incl. current state values) as JSON, import back with optional root-path rewrite. Scripts export/import: full backup of all script.js.* as one JSON, import with disable-on-load safety option.",
+        "de": "Auto-Migration des TOTP-Secrets aus dem alten miniadmin-Adapter gefixt (this.config wurde nach dem Patch nicht refresht). Neuer manueller Migrate-Button in Einstellungen falls du miniadmin.0 noch hast. Restore: Backup-Datei hochladen (bis ~110 MB), Restore via 'iobroker restore' mit Live-Terminal. Pro-Datei Restore- und Loeschen-Buttons in der SYSTEM-Backup-Liste. Object Export/Import: aus dem Datenpunkte-Browser einen Unterbaum (inkl. aktueller State-Werte) als JSON exportieren, mit optionalem Root-Pfad-Rewrite importieren. Scripts Export/Import: alle script.js.* als ein JSON, Import mit Deaktivieren-Safety-Option."
+      },
+      "0.8.1": {
+        "en": "Dashboard: new always-visible stats bar at top with CPU / RAM / Disk usage (colored, with progress bars that go yellow at 75% and red at 90%), system uptime and primary IP. Services tab: in expert mode each row shows RAM (MB), CPU (%) and Events per minute (received/sent). Toggling expert mode now triggers refresh of the active tab so the extra columns appear immediately. Cache-bust bumped to v0.8.1 on all assets.",
+        "de": "Uebersicht: neue immer sichtbare Stats-Leiste oben mit CPU / RAM / Disk-Auslastung (farbig, mit Balken die ab 75% gelb und ab 90% rot werden), System-Uptime und primaerer IP. Services-Tab: im Experten-Modus zeigt jede Zeile RAM (MB), CPU (%) und Events pro Minute (empfangen/gesendet). Beim Umschalten des Experten-Modus wird die aktive Tab neu geladen, damit die zusaetzlichen Spalten sofort erscheinen. Cache-bust auf v0.8.1 fuer alle Assets erhoeht."
+      },
+      "0.8.0": {
+        "en": "RENAMED to iobroker.fid-bridge (was: iobroker.miniadmin). One-time migration on first start copies TOTP secret, custom links, theme and auth settings from the old miniadmin.0 instance. Datapoint editor: boolean values get a touch-friendly toggle, common.states get clickable buttons, numbers get +/- buttons with min/max enforcement. Buttons more spacious for tablet use (min 38px tap target, more padding, more gap). TOTP login: title now white on accent gradient instead of low-contrast blue. Cache-busting on all CSS/JS URLs (?v=0.8.0). System config: more defensive i18n extraction — even cleans up legacy '[object Object]' strings. UI renamed 'iobroker' to 'fiducerion' in headers and labels.",
+        "de": "UMBENANNT zu iobroker.fid-bridge (vorher: iobroker.miniadmin). Einmalige Migration beim ersten Start uebernimmt TOTP-Geheimnis, Custom-Links, Theme und Auth-Einstellungen von der alten miniadmin.0-Instance. Datenpunkt-Editor: Boolean-Werte bekommen einen touch-freundlichen Toggle, common.states bekommen klickbare Buttons, Zahlen bekommen +/- Buttons mit Min/Max-Begrenzung. Buttons mehr Platz fuer Tablet-Bedienung (mindestens 38px Treffflaeche, mehr Padding, mehr Abstand). TOTP-Login: Titel jetzt weiss auf Akzent-Gradient statt schlecht lesbarem Blau. Cache-Busting auf allen CSS/JS-URLs (?v=0.8.0). System-Konfig: defensiver i18n-Helper - bereinigt sogar Legacy-'[object Object]'-Strings. UI Wort 'iobroker' durch 'fiducerion' ersetzt in Headers und Labels."
+      },
+      "0.7.4": {
+        "en": "Dashboard: all cards collapsible, default collapsed. Structure: alias tree folders default collapsed on first load. System config: name-field i18n extraction now recursive (handles nested objects), 'Währungssymbol' field removed - only 'Währung' remains as in original ioBroker config. zigbee2mqtt link: now parses native.server/broker as URL to extract the actual MQTT host IP (typical case where z2m runs on a different machine), uses standard frontend port 8080. If no host can be derived, the link is omitted instead of pointing to the wrong IP. New lcars-light theme.",
+        "de": "Uebersicht: alle Karten klappbar, standardmaessig zugeklappt. Struktur: Alias-Baum-Ordner default zugeklappt beim Laden. System-Konfig: Installations-Name i18n-Aufloesung jetzt rekursiv (auch verschachtelte Objekte), Waehrungssymbol-Feld entfernt - nur Waehrung bleibt wie im Original-ioBroker. zigbee2mqtt-Link: parst jetzt native.server/broker als URL und extrahiert die echte MQTT-Host-IP (typischer Fall wo z2m auf einem anderen Rechner laeuft), nimmt Standard-Frontend-Port 8080. Falls kein Host ableitbar, kein Link statt falschem. Neues lcars-light Theme."
+      },
+      "0.7.3": {
+        "en": "Bug-fixes: system config now reads i18n values like 'name' and 'currency' correctly instead of showing '[object Object]'. Backup terminal: title/runId argument order fixed, immediate info text written so users see something on screen even before live output arrives (which can be minutes for backup), force-close button (X) always available, backup list auto-refreshes after 30s/60s/180s. Slate theme: new ma-btn-danger class with proper red-on-white contrast for delete buttons. zigbee2mqtt link now reads native.frontendHost/frontendPort. Custom web links: editable list in SYSTEM tab to add Proxmox-UI, router etc. with %ip% placeholder. Aliases as collapsible tree grouped by dots. Dashboard notification and web-link cards collapsible (default collapsed). New slate-light theme.",
+        "de": "Bug-Fixes: System-Konfig liest i18n-Werte wie 'name' und 'currency' jetzt korrekt statt '[object Object]' anzuzeigen. Backup-Terminal: title/runId Argument-Reihenfolge gefixt, Info-Text direkt geschrieben damit du etwas siehst auch wenn der Live-Output spaeter kommt (kann bei backup Minuten dauern), Force-Close-Button (X) immer verfuegbar, Backup-Liste aktualisiert sich automatisch nach 30s/60s/180s. Slate-Theme: neue ma-btn-danger Klasse mit Weiss-auf-Rot Kontrast fuer Loeschen-Buttons. zigbee2mqtt-Link liest jetzt native.frontendHost/frontendPort. Eigene Web-Links: editierbare Liste im SYSTEM-Tab fuer Proxmox-UI, Router etc. mit %ip%-Platzhalter. Aliase als aufklappbarer Baum gruppiert nach Punkten. Dashboard-Karten Benachrichtigungen und Web-Zugaenge zugeklappt by default, klick auf Header oeffnet. Neues Slate-Light Theme (helle Variante)."
+      },
+      "0.7.2": {
+        "en": "Critical fix: getNotifications sendToHost was called with null message - js-controller v7.x reads message.scope and crashes the host process with 'Cannot read properties of null (reading scope)'. Now sends { scope: null } instead. Added disableNotifications kill-switch in adapter config: enable it to skip getNotifications entirely if your js-controller version still crashes.",
+        "de": "Kritischer Fix: getNotifications sendToHost wurde mit null als Message aufgerufen - js-controller v7.x liest message.scope und crashed den Host-Prozess mit 'Cannot read properties of null (reading scope)'. Jetzt wird { scope: null } gesendet. Neuer Kill-Switch disableNotifications in der Adapter-Konfiguration: aktivieren um getNotifications komplett zu ueberspringen, falls dein js-controller trotzdem crashed."
+      },
+      "0.7.1": {
+        "en": "Hotfix: objects routes order was wrong - generic PUT/DELETE /(.+) matched BEFORE /(.+)/rename and /(.+)/custom, swallowing the suffixes and calling extendForeignObject with invalid IDs like 'foo.bar/custom'. Reordered routes and added belt-and-suspenders 404 guard. Hardened lib/api/notifications.js against missing host.js export, malformed getNotifications responses, and missing broadcast/registerHostMessageHandler. Hardened lib/api/structure.js against missing object views.",
+        "de": "Hotfix: objects Route-Reihenfolge war falsch - generische PUT/DELETE /(.+) haben VOR /(.+)/rename und /(.+)/custom gegriffen, die Suffixe geschluckt und extendForeignObject mit unguelltigen IDs wie 'foo.bar/custom' aufgerufen. Routen umsortiert und 404-Guard ergaenzt. lib/api/notifications.js gehaertet gegen fehlenden host.js-Export, kaputte getNotifications-Antworten und fehlende broadcast/registerHostMessageHandler. lib/api/structure.js gegen fehlende getObjectView-Ergebnisse gehaertet."
+      },
+      "0.7.0": {
+        "en": "Datapoints fully editable: rename/move, delete, role change, custom-adapter setup (history/influxdb/sql logging toggle), raw JSON editor. New STRUKTUR tab with aliases, rooms and functions (full CRUD + member management). System notifications card on dashboard with one-click clear per host/scope/category. Backup section in SYSTEM tab: trigger 'iobroker backup' with live terminal output, list of existing backup files with size and date. Per-service log viewer (📜 button in services list) — filters live log by adapter namespace with severity filter and pause/clear.",
+        "de": "Datenpunkte voll editierbar: Umbenennen/Verschieben, Loeschen, Role aendern, Custom-Adapter konfigurieren (history/influxdb/sql Logging ein/aus), Roh-JSON-Editor. Neuer STRUKTUR-Tab mit Aliasen, Raeumen und Funktionen (CRUD + Mitglieder-Verwaltung). System-Benachrichtigungen als Dashboard-Card mit Erledigt-Button pro Host/Scope/Kategorie. Backup-Sektion im SYSTEM-Tab: 'iobroker backup' mit Live-Terminal triggern, Liste vorhandener Backup-Dateien mit Groesse und Datum. Service-Log-Viewer (📜 Button in der Services-Liste) — filtert Live-Log nach Adapter-Namespace mit Level-Filter und Pause/Leeren."
+      },
+      "0.6.0": {
+        "en": "Expert mode toggle in sidebar — gates destructive actions (delete service, uninstall module, delete file, delete automation) behind a single switch synced with system.config.common.expertMode. Host detail modal: new raw JSON editor (expert-only) for full common+native editing alongside the form. Automations CRUD: new '+ Neu' button, plus per-script rename/move (✎) and delete (🗑, expert-only).",
+        "de": "Experten-Modus-Toggle in der Sidebar — schaltet destruktive Aktionen frei (Service loeschen, Modul entfernen, Datei loeschen, Automation loeschen). Synchronisiert mit system.config.common.expertMode. Host-Detail-Modal: Roh-JSON-Editor (nur Expert-Mode) fuer komplettes common+native zusaetzlich zum Formular. Automationen CRUD: '+ Neu'-Button, plus pro Automation Umbenennen/Verschieben (✎) und Loeschen (🗑, expert-only)."
+      },
+      "0.5.2": {
+        "en": "Web-Zugaenge: whitelist fallback for adapters that don't ship a localLink (zigbee2mqtt, frontail, node-red, octoprint, esphome and a few more). Host detail modal now has an edit mode (title and default loglevel).",
+        "de": "Web-Zugaenge: Whitelist-Fallback fuer Adapter ohne localLink (zigbee2mqtt, frontail, node-red, octoprint, esphome und ein paar weitere). Host-Detail-Modal hat jetzt einen Bearbeiten-Modus (Titel und Default-Loglevel)."
+      },
+      "0.5.1": {
+        "en": "New DATEIEN tab: browse the ioBroker file storage by namespace (vis.0, 0_userdata.0, *.admin, ...), with breadcrumb navigation, download / open / delete actions, plus file upload. Dashboard now has a WEB-ZUGAENGE card listing every adapter's web UI (resolved from common.localLink and common.welcomeScreen) as clickable tiles.",
+        "de": "Neuer DATEIEN-Tab: ioBroker-File-Storage pro Namespace durchsuchen (vis.0, 0_userdata.0, *.admin, ...), mit Breadcrumb-Navigation, Download / Anzeigen / Loeschen plus Upload. Dashboard hat jetzt eine Karte WEB-ZUGAENGE mit allen Adapter-Web-UIs (aus common.localLink und common.welcomeScreen aufgeloest) als klickbare Kacheln."
+      },
+      "0.5.0": {
+        "en": "React-config support via iframe embed of the official Admin UI + 'open in new tab' button (fallback when adapter blocks iframes). New SYSTEM tab: edit ioBroker base config (language, units, currency, geo, repo, expert mode), and inspect all hosts with status (uptime, load, RAM, disk), OS, hardware, and network interfaces.",
+        "de": "React-Config-Unterstuetzung: iframe-Einbettung der offiziellen Admin-UI + 'In neuem Tab oeffnen'-Button (Fallback wenn Adapter iframes blockt). Neuer SYSTEM-Tab: ioBroker-Grundkonfig bearbeiten (Sprache, Einheiten, Waehrung, Geo, Repo, Experten-Modus) und alle Hosts inspizieren mit Status (Uptime, Load, RAM, Disk), OS, Hardware und Netzwerk-Interfaces."
+      },
+      "0.4.2": {
+        "en": "Scripts tab is now a collapsible tree (common/global/...). Status terminology cleaned up: services show 'laeuft'/'wartet'/'aus', scripts show 'an'/'aus'. jsonConfig editor now explains why no schema was found. Both themes much more colorful: card brackets, stat borders, tab accents and pills vary per position with the full LCARS / Slate palettes.",
+        "de": "Automationen-Tab ist jetzt ein klappbarer Baum (common/global/...). Status-Begriffe entwirrt: Services zeigen 'laeuft'/'wartet'/'aus', Skripte zeigen 'an'/'aus'. jsonConfig-Editor erklaert jetzt, warum kein Schema gefunden wurde. Beide Themes deutlich bunter: Card-Brackets, Stat-Borders, Tab-Akzente und Pillen variieren pro Position in der vollen LCARS- / Slate-Palette."
+      },
+      "0.4.1": {
+        "en": "New AUTOMATIONEN tab: list and edit script.js.* (the JavaScript adapter's scripts). CodeMirror 5 editor via CDN with monokai theme, plain textarea fallback when offline. Enable/disable scripts, save changes (JS adapter reloads automatically). jsonConfig now also reads from object-DB file storage as fallback (fixes admin/alexa/web/tuya schema loading).",
+        "de": "Neuer AUTOMATIONEN-Tab: script.js.* (Scripte des JavaScript-Adapters) auflisten und editieren. CodeMirror 5 Editor via CDN mit Monokai-Theme, Plain-Textarea-Fallback offline. Aktivieren/Deaktivieren, Speichern (JS-Adapter laedt automatisch neu). jsonConfig liest jetzt auch aus dem Object-DB-File-Storage als Fallback (fixt Schema-Laden bei admin/alexa/web/tuya)."
+      },
+      "0.4.0": {
+        "en": "TOTP submit now triggers location.reload() — fixes blank screen after login and missing header. Sessions persist across adapter restarts via native.sessionStore (debounced). jsonConfig schema renderer: edit adapter configs directly in Bridge (tabs, panel, header, text, password, number, checkbox, select, color). Fallback raw JSON editor for adapters without schema.",
+        "de": "TOTP-Submit macht jetzt location.reload() — fixt schwarzen Bildschirm nach Login und fehlenden Header. Sessions ueberleben Adapter-Restarts ueber native.sessionStore (debounced). jsonConfig-Renderer: Adapter-Konfigs direkt in der Bridge bearbeiten (tabs, panel, header, text, password, number, checkbox, select, color). Roh-JSON-Editor als Fallback fuer Adapter ohne Schema."
+      },
+      "0.3.4": {
+        "en": "Fix: app container leaked through TOTP modal because CSS display:grid overrode the HTML hidden attribute. Added .ma-app[hidden] selector. TOTP modal overlay is now fully opaque.",
+        "de": "Fix: App-Container schimmerte durch TOTP-Modal, weil CSS display:grid das HTML-hidden-Attribut ueberstimmte. .ma-app[hidden]-Selektor ergaenzt. TOTP-Modal-Overlay jetzt vollstaendig deckend."
+      },
+      "0.3.3": {
+        "en": "Critical TOTP fix: totpSecret was being corrupted by encryptedNative (ioBroker auto-decrypts but did not auto-encrypt on write). Removed totpSecret from encryptedNative, added migration that resets a corrupted secret on startup. TOTP modal now has explicit styling so it stays readable before the theme loads. Verify failures now log expected code and secret diagnostics.",
+        "de": "Kritischer TOTP-Fix: totpSecret wurde durch encryptedNative zerstoert (ioBroker entschluesselt automatisch, verschluesselt aber beim Schreiben nicht). totpSecret aus encryptedNative entfernt, Migration setzt kaputtes Secret beim Start zurueck. TOTP-Modal hat jetzt explizite Styles, damit es vor dem Theme-Load lesbar bleibt. Verify-Fehler loggen jetzt erwarteten Code und Secret-Diagnose."
+      },
+      "0.3.2": {
+        "en": "Hotfix: TOTP modal hidden by splash z-index. Modal now sits above splash, and splash is hidden when TOTP is required.",
+        "de": "Hotfix: TOTP-Modal wurde vom Splash verdeckt (z-index). Modal liegt jetzt ueber dem Splash, und Splash wird ausgeblendet wenn TOTP-Eingabe noetig ist."
+      },
+      "0.3.1": {
+        "en": "Hotfix: server.js refactor regression — v0.2 API modules (objects.js, themes.js) lost access to config. Restored via deps.config getter.",
+        "de": "Hotfix: server.js Refactor-Regression — v0.2-API-Module (objects.js, themes.js) konnten config nicht mehr lesen. Per deps.config-Getter wiederhergestellt."
+      },
+      "0.3.0": {
+        "en": "Fiducerion Bridge logo. TOTP 2FA with setup wizard. Module install/upgrade/uninstall via live terminal. Repository browser. Add/delete service instances. Robust update.sh v3.",
+        "de": "Fiducerion Bridge Logo. TOTP 2FA mit Setup-Assistent. Module installieren/aktualisieren/entfernen mit Live-Terminal. Repository-Browser. Service-Instanzen anlegen/loeschen. Robustes update.sh v3."
+      },
+      "0.2.0": {
+        "en": "Rebranding. Logs fixed. Services tab. Module list. Real datapoint counter. Direct URL. Auto-refresh. Port 8008.",
+        "de": "Rebranding. Logs gefixt. Services-Tab. Modul-Liste. Echter Datenpunkt-Zaehler. Direktlink. Auto-Refresh. Port 8008."
+      },
+      "0.1.0": {
+        "en": "Initial release.",
+        "de": "Erstes Release."
+      }
+    },
+    "title": "Fiducerion Bridge",
+    "titleLang": {
+      "en": "Fiducerion Bridge",
+      "de": "Fiducerion Bridge"
+    },
+    "desc": {
+      "en": "Lean admin UI — part of Fiducerion Core.",
+      "de": "Schlanke Verwaltungs-UI — Teil von Fiducerion Core."
+    },
+    "authors": [
+      "Bernd <noreply@example.com>"
+    ],
+    "keywords": [
+      "admin",
+      "ui",
+      "fid-bridge",
+      "fiducerion",
+      "lcars"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "fid-bridge.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/USER/iobroker.fid-bridge/main/admin/fid-bridge.png",
+    "readme": "https://github.com/USER/iobroker.fid-bridge/blob/main/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "general",
+    "compact": false,
+    "connectionType": "local",
+    "dataSource": "push",
+    "adminUI": {
+      "config": "json"
+    },
+    "messagebox": true,
+    "supportCustoms": false,
+    "subscribable": false,
+    "subscribe": false,
+    "logTransporter": true,
+    "tier": 2,
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.0"
+      }
+    ],
+    "globalDependencies": [],
+    "stopBeforeUpdate": true,
+    "restartAdapters": [],
+    "supportedMessages": {
+      "custom": false,
+      "deviceManager": false
+    }
+  },
+  "native": {
+    "ownPort": 8008,
+    "bindHost": "0.0.0.0",
+    "enableOwnPort": true,
+    "enableWebExtension": false,
+    "webInstance": "web.0",
+    "webMountPath": "fid-bridge",
+    "authToken": "",
+    "requireAuth": false,
+    "requireTotp": false,
+    "totpSecret": "",
+    "defaultTheme": "lcars",
+    "defaultStartTab": "dashboard",
+    "logTailLines": 200,
+    "logHistorySize": 500,
+    "objectCacheTtlSec": 30,
+    "allowExec": true,
+    "disableNotifications": false,
+    "sessionStore": []
+  },
+  "protectedNative": [
+    "totpSecret",
+    "authToken",
+    "sessionStore"
+  ],
+  "encryptedNative": [
+    "authToken"
+  ],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Status information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Web server running",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.url",
+      "type": "state",
+      "common": {
+        "role": "text.url",
+        "name": "Frontend URL",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.clients",
+      "type": "state",
+      "common": {
+        "role": "value",
+        "name": "Connected websocket clients",
+        "type": "number",
+        "read": true,
+        "write": false,
+        "def": 0
+      },
+      "native": {}
+    }
+  ]
+}

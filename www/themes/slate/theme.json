@@ -1,0 +1,9 @@
+{
+  "id": "slate",
+  "label": "Slate",
+  "description": "Neutrales, modernes Dark-Theme mit flachen Karten und gedaempften Akzenten",
+  "author": "MiniAdmin",
+  "version": "1.0.0",
+  "dark": true,
+  "accent": "#5b9dff"
+}

@@ -1,5 +1,7 @@
 node_modules/
 *.log
 .DS_Store
-*.tgz
-.tmp/
+.idea/
+.vscode/
+package-lock.json
+npm-debug.log*

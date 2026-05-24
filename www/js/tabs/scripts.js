@@ -11,8 +11,8 @@
     $('scrReload') && $('scrReload').addEventListener('click', load);
     $('scrSearch') && $('scrSearch').addEventListener('input', render);
     $('scrFilter') && $('scrFilter').addEventListener('change', render);
-    $('scrExpandAll')   && $('scrExpandAll').addEventListener('click',   () => { collapsed.clear(); render(); });
-    $('scrCollapseAll') && $('scrCollapseAll').addEventListener('click', () => { collapseAll(); render(); });
+    $('scrExpandAll')   && $('scrExpandAll').addEventListener('click',   () => { collapsed.clear(); saveCollapsedToStorage(); render(); });
+    $('scrCollapseAll') && $('scrCollapseAll').addEventListener('click', () => { collapseAll(); saveCollapsedToStorage(); render(); });
     $('scrExportAll')   && $('scrExportAll').addEventListener('click', exportAll);
     $('scrImportAll')   && $('scrImportAll').addEventListener('click', () => $('scrImportInput').click());
     $('scrImportInput') && $('scrImportInput').addEventListener('change', onImportFile);
@@ -21,12 +21,57 @@
 
   async function refresh() { init(); await load(); }
 
+  // Punkt 6: Folder-Status pro Tree-Pfad in localStorage merken
+  const COLLAPSED_LS_KEY  = 'fid-bridge.scripts.collapsed';
+  const LAST_SCRIPT_LS_KEY = 'fid-bridge.scripts.lastOpened';
+  let initialLoadDone = false;
+
+  function loadCollapsedFromStorage() {
+    try {
+      const raw = localStorage.getItem(COLLAPSED_LS_KEY);
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          collapsed.clear();
+          arr.forEach(p => collapsed.add(p));
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+  function saveCollapsedToStorage() {
+    try { localStorage.setItem(COLLAPSED_LS_KEY, JSON.stringify(Array.from(collapsed))); } catch (e) {}
+  }
+
   async function load() {
     const tree = document.querySelector('#scrTree');
     if (tree) tree.innerHTML = '<div class="ma-muted">Lade...</div>';
     try {
       const r = await global.MA.api.listScripts();
       items = r.items || [];
+
+      if (!initialLoadDone) {
+        initialLoadDone = true;
+        // Punkt 6: beim ersten Render entweder gespeicherten Collapsed-State
+        // wiederherstellen ODER default ALLES zugeklappt anzeigen
+        const hadStored = loadCollapsedFromStorage();
+        if (!hadStored) {
+          collapseAll();
+        }
+        // Plus: zuletzt geoeffnetes Skript wiederherstellen (deep-link aehnlich)
+        try {
+          const lastId = localStorage.getItem(LAST_SCRIPT_LS_KEY);
+          if (lastId) {
+            // Pfad aufklappen damit das Skript sichtbar ist
+            const parts = lastId.split('.');
+            for (let i = 1; i < parts.length; i++) {
+              collapsed.delete(parts.slice(0, i).join('.'));
+            }
+          }
+        } catch (e) {}
+      }
+
       render();
     } catch (e) {
       if (tree) tree.innerHTML = `<div class="ma-muted">Fehler: ${escapeHtml(e.message)}</div>`;
@@ -112,6 +157,7 @@
       header.addEventListener('click', () => {
         if (collapsed.has(folder.path)) collapsed.delete(folder.path);
         else collapsed.add(folder.path);
+        saveCollapsedToStorage();
         render();
       });
       container.appendChild(header);
@@ -146,7 +192,11 @@
         btn.addEventListener('click', async (ev) => {
           ev.stopPropagation();
           const id = btn.dataset.id, act = btn.dataset.act;
-          if (act === 'edit')   { global.MA.scriptEditor.open(id); return; }
+          if (act === 'edit')   {
+            try { localStorage.setItem(LAST_SCRIPT_LS_KEY, id); } catch (e) {}
+            global.MA.scriptEditor.open(id);
+            return;
+          }
           if (act === 'rename') { openRenameDialog(id); return; }
           if (act === 'export') { exportOne(id); return; }
           if (act === 'delete') {

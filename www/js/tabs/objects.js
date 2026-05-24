@@ -15,6 +15,17 @@
     $('objFilter') && $('objFilter').addEventListener('input', applyFilter);
     $('objType')   && $('objType').addEventListener('change', load);
     $('objSpecial')&& $('objSpecial').addEventListener('change', load);
+    $('objExpandAll')   && $('objExpandAll').addEventListener('click', () => {
+      treeCollapsed.clear();
+      render();
+    });
+    $('objCollapseAll') && $('objCollapseAll').addEventListener('click', () => {
+      if (filtered && filtered.length) {
+        const root = buildTree(filtered);
+        collapseAllInTree(root);
+        render();
+      }
+    });
     $('objExportBtn') && $('objExportBtn').addEventListener('click', exportTree);
     $('objImportBtn') && $('objImportBtn').addEventListener('click', () => $('objImportInput').click());
     $('objImportInput') && $('objImportInput').addEventListener('change', onImportFile);
@@ -143,6 +154,17 @@
   let treeInitialized = false;
   const TREE_ROW_LIMIT = 3000;
 
+  // Alle Folder im Baum (rekursiv) als collapsed markieren
+  function collapseAllInTree(root) {
+    function walk(node) {
+      if (node.children && node.children.size > 0) {
+        if (node.fullId) treeCollapsed.add(node.fullId);
+        for (const child of node.children.values()) walk(child);
+      }
+    }
+    walk(root);
+  }
+
   // States für die geladenen Items - inline im Baum anzeigen
   const stateMap = Object.create(null);
   let stateRefreshTimer = null;
@@ -245,6 +267,42 @@
     render();
   }
 
+  /**
+   * Bestimmt Online/Offline-Status fuer ein device/channel/instance.
+   * Schaut nach typischen State-Namen unter der ID.
+   * @returns {boolean|null} true=online, false=offline, null=unbekannt
+   */
+  function detectOnlineState(id) {
+    if (!id || !stateMap) return null;
+    const prefix = id + '.';
+    // Suche nach states deren Name auf typische online-marker passt
+    const onlineKeys = ['online', 'connected', 'alive', 'reachable', 'available'];
+    const offlineKeys = ['offline', 'unreach', 'unreachable'];
+
+    for (const sid of Object.keys(stateMap)) {
+      if (!sid.startsWith(prefix)) continue;
+      const sub = sid.slice(prefix.length);
+      // Nur Top-Level-Childs (z.B. dev.online, nicht dev.foo.bar.online)
+      if (sub.indexOf('.') >= 0) continue;
+      const lcSub = sub.toLowerCase();
+      const st = stateMap[sid];
+      if (!st || st.val === null || st.val === undefined) continue;
+      const v = st.val;
+      const truthy = (v === true || v === 1 || v === '1' || v === 'true' || v === 'online');
+      const falsy  = (v === false || v === 0 || v === '0' || v === 'false' || v === 'offline');
+
+      if (onlineKeys.includes(lcSub)) {
+        if (truthy) return true;
+        if (falsy)  return false;
+      }
+      if (offlineKeys.includes(lcSub)) {
+        if (truthy) return false;  // offline=true -> not online
+        if (falsy)  return true;
+      }
+    }
+    return null;
+  }
+
   function typeIcon(t) {
     switch (t) {
       case 'state':    return '◇';
@@ -255,8 +313,7 @@
       case 'instance': return '◈';
       case 'adapter':  return '⬢';
       case 'host':     return '⬣';
-      case 'script':   return '§';
-      case 'meta':     return '※';
+      case 'script':   return '§';      case 'meta':     return '※';
       default:         return '·';
     }
   }
@@ -321,11 +378,10 @@
     // Baum bauen
     const root = buildTree(filtered);
 
-    // Beim ersten Mal nach dem Laden: alle Top-Level-Folder zuklappen
+    // Beim ersten Mal nach dem Laden: ALLE Folder zuklappen (nicht nur Top-Level).
+    // Punkt 5: User wuenscht default zugeklappt fuer schnelleren Ueberblick.
     if (!treeInitialized) {
-      for (const top of root.children.values()) {
-        if (top.children.size > 0) treeCollapsed.add(top.fullId);
-      }
+      collapseAllInTree(root);
       treeInitialized = true;
     }
 
@@ -345,13 +401,21 @@
       const stateId = isState ? n.item.id : '';
       const st = isState ? stateMap[stateId] : null;
       const valHtml = isState ? fmtInlineVal(st) : '';
-      // Common unit + write-Indicator
       const unit = (isState && n.item && n.item.unit) ? n.item.unit : '';
-      // Wenn der Knoten ein echtes Object hat: klickbar zum Auswählen.
-      // Wenn nur Folder ohne Object: klickbar zum Auf-/Zuklappen.
-      // Wenn Object UND Children: Klick auf Toggle klappt, Klick auf Name selectet.
+
+      // Punkt 3: Device-online-Status detektieren.
+      // Wir schauen ob es einen Sub-State <devId>.online ODER <devId>.connected
+      // ODER <devId>.alive oder *.UNREACH gibt und ob er truthy ist.
+      // Greift fuer Devices und Channels (z.B. tuya geraete) sowie instances.
+      let onlineClass = '';
+      if (n.item && (n.item.type === 'device' || n.item.type === 'channel' || n.item.type === 'instance')) {
+        const onlineState = detectOnlineState(n.item.id);
+        if (onlineState === true)       onlineClass = ' device-online';
+        else if (onlineState === false) onlineClass = ' device-offline';
+      }
+
       return `
-        <div class="tree-row ${isSel ? 'selected' : ''}" data-id="${escapeHtml(n.fullId)}" data-has-item="${n.item ? '1' : '0'}" style="padding-left:${indentPx + 6}px">
+        <div class="tree-row ${isSel ? 'selected' : ''}${onlineClass}" data-id="${escapeHtml(n.fullId)}" data-has-item="${n.item ? '1' : '0'}" style="padding-left:${indentPx + 6}px">
           <span class="tree-toggle ${showToggle ? '' : 'tree-toggle-blank'}" data-toggle="${escapeHtml(n.fullId)}">${togIcon}</span>
           <span class="tree-icon">${tIcon}</span>
           <span class="tree-name">${escapeHtml(n.name)}</span>

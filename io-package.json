@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "fid-bridge",
-    "version": "0.12.7",
+    "version": "0.13.0",
     "news": {
+      "0.13.0": {
+        "de": "v0.13.0: 8-Punkte UI-Update + Backup-Plan.\n(1) Object-Browser: Schrift in Baum von 13px auf 15px.\n(2) Object-Browser: 'Alle auf/zu'-Buttons.\n(3) Object-Browser: Devices/Channels mit erkanntem .online State werden GRUEN markiert (Icon + Name); offline = grau.\n(4) Modal-Fenster: max-width 1200px statt 900px.\n(5) Object-Browser: ALLE Folder default zugeklappt beim Laden.\n(6) Automationen: Folder-Status wird in localStorage gemerkt und beim Wiederbesuchen wiederhergestellt. Beim ersten Besuch default zugeklappt. Plus: zuletzt geoeffnetes Skript bleibt im Pfad aufgeklappt fuer schnellen Wiedereinstieg.\n(7) Neues Theme 'ioBroker' (Material-UI Dark wie iobroker.admin).\n(8) Backup-Plan: neuer Tab mit Schedule (mehrere Tageszeiten), externer Kopier-Pfad, Aufbewahrungsdauer. Triggert 'iobroker backup' via sendToHost cmdExec, kopiert das Result nach z.B. /mnt/Daten/Backup/iobroker.",
+        "en": "v0.13.0: 8-point UI overhaul + backup schedule. Tree font up, expand/collapse-all, online-state coloring, larger modals, default-collapsed trees, persisted folder state, new ioBroker theme, backup scheduler with external copy."
+      },
       "0.12.7": {
         "de": "v0.12.7: Logo-Icon in der README ergaenzt.",
         "en": "v0.12.7: Added logo icon to README."
@@ -236,7 +240,14 @@
     "objectCacheTtlSec": 30,
     "allowExec": true,
     "disableNotifications": false,
-    "sessionStore": []
+    "sessionStore": [],
+    "backup": {
+      "enabled": false,
+      "times": [],
+      "copyTo": "",
+      "keepDays": 14,
+      "host": ""
+    }
   },
   "protectedNative": [
     "totpSecret",

@@ -167,7 +167,13 @@
     analyzerHistory: () => req('GET', '/api/analyzer/history'),
 
     // Logs
-    logsRecent: (limit) => req('GET', '/api/logs/recent?limit=' + (limit || 200))
+    logsRecent: (limit) => req('GET', '/api/logs/recent?limit=' + (limit || 200)),
+
+    // Backup-Schedule (Punkt 8)
+    backupStatus:       ()        => req('GET',  '/api/backup-schedule/status'),
+    backupSaveConfig:   (cfg)     => req('POST', '/api/backup-schedule/config', cfg),
+    backupRunNow:       ()        => req('POST', '/api/backup-schedule/run-now', {}),
+    backupExternalList: ()        => req('GET',  '/api/backup-schedule/external-list')
   };
 
   function wsConnect() {

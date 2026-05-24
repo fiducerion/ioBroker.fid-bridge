@@ -26,8 +26,9 @@
     { id: 'users',     num: '10', label: 'BENUTZER' },
     { id: 'logs',      num: '11', label: 'PROTOKOLL' },
     { id: 'analyzer',  num: '12', label: 'ANALYZER' },
-    { id: 'system',    num: '13', label: 'SYSTEM' },
-    { id: 'settings',  num: '14', label: 'EINSTELLUNGEN' }
+    { id: 'backup',    num: '13', label: 'BACKUP' },
+    { id: 'system',    num: '14', label: 'SYSTEM' },
+    { id: 'settings',  num: '15', label: 'EINSTELLUNGEN' }
   ];
 
   function buildTabs(activeId, onChange) {

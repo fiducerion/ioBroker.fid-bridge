@@ -235,6 +235,8 @@
                 <option value="role:sensor.*">Rolle: sensor.*</option>
               </select>
               <button class="ma-btn" id="objLoadBtn">Laden</button>
+              <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objExpandAll" title="Alle Knoten aufklappen">⊞ Alle auf</button>
+              <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objCollapseAll" title="Alle Knoten zuklappen">⊟ Alle zu</button>
               <button class="ma-btn ma-btn-ghost" id="objExportBtn" title="Aktuell geladene Objekte (mit States) als JSON exportieren">⤓ Export</button>
               <button class="ma-btn ma-btn-ghost" id="objImportBtn" title="Objekte aus JSON-Datei importieren">⤒ Import</button>
               <input type="file" id="objImportInput" hidden accept=".json" />
@@ -415,6 +417,64 @@
           </div>
         </section>
 
+        <!-- Backup -->
+        <section class="ma-tabpage" data-tab="backup">
+          <div class="ma-card">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">BACKUP-PLAN</div>
+              <div class="ma-card-badges">
+                <button class="ma-btn" id="bkSave">Speichern</button>
+                <button class="ma-btn ma-btn-ghost" id="bkRunNow" title="Sofort einen Backup-Run starten">▶ Jetzt sichern</button>
+                <button class="ma-btn ma-btn-ghost" id="bkRefresh">Aktualisieren</button>
+              </div>
+            </div>
+            <div style="padding: 14px 16px;">
+              <div class="ma-form-row">
+                <label><input type="checkbox" id="bkEnabled" /> <strong>Backup-Plan aktiv</strong></label>
+              </div>
+              <div class="ma-form-row" style="margin-top: 12px;">
+                <label>Zeiten (HH:MM, mehrere mit Komma getrennt):</label>
+                <input class="ma-input" id="bkTimes" placeholder="03:00, 15:00" style="width: 280px;" />
+                <div class="ma-muted" style="font-size: 12px; margin-top: 4px;">
+                  Der iobroker-Befehl <code>iobroker backup</code> wird zu diesen Zeiten via sendToHost cmdExec ausgefuehrt.
+                </div>
+              </div>
+              <div class="ma-form-row" style="margin-top: 12px;">
+                <label>Externer Kopier-Pfad (optional, leer = nicht kopieren):</label>
+                <input class="ma-input" id="bkCopyTo" placeholder="/mnt/Daten/Backup/iobroker" style="width: 100%; max-width: 480px;" />
+                <div class="ma-muted" style="font-size: 12px; margin-top: 4px;">
+                  Nach erfolgreichem Backup wird die .tar.gz-Datei dorthin kopiert (Verzeichnis wird angelegt).
+                </div>
+              </div>
+              <div class="ma-form-row" style="margin-top: 12px;">
+                <label>Aufbewahrung im externen Pfad (Tage, 0 = keine Bereinigung):</label>
+                <input class="ma-input" type="number" id="bkKeepDays" min="0" max="365" style="width: 100px;" />
+              </div>
+            </div>
+          </div>
+
+          <div class="ma-card" style="margin-top: 14px;">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">STATUS</div>
+            </div>
+            <div style="padding: 14px 16px;" id="bkStatus">
+              <div class="ma-muted">Lade...</div>
+            </div>
+          </div>
+
+          <div class="ma-card" style="margin-top: 14px;">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">EXTERNE BACKUPS</div>
+            </div>
+            <div style="padding: 14px 16px;" id="bkExternalList">
+              <div class="ma-muted">Lade...</div>
+            </div>
+          </div>
+        </section>
+
         <!-- System -->
         <section class="ma-tabpage" data-tab="system">
           <div class="ma-card">
@@ -475,20 +535,21 @@
   <script src="/js/terminal.js?v=0.12.5"></script>
   <script src="/js/configEditor.js?v=0.12.5"></script>
   <script src="/js/scriptEditor.js?v=0.12.5"></script>
-  <script src="/js/tabs/dashboard.js?v=0.12.5"></script>
-  <script src="/js/tabs/services.js?v=0.12.5"></script>
-  <script src="/js/tabs/modules.js?v=0.12.5"></script>
-  <script src="/js/tabs/repo.js?v=0.12.5"></script>
-  <script src="/js/tabs/objects.js?v=0.12.5"></script>
-  <script src="/js/tabs/scripts.js?v=0.12.5"></script>
-  <script src="/js/tabs/structure.js?v=0.12.5"></script>
-  <script src="/js/tabs/files.js?v=0.12.5"></script>
-  <script src="/js/tabs/users.js?v=0.12.5"></script>
-  <script src="/js/tabs/analyzer.js?v=0.12.5"></script>
-  <script src="/js/serviceLog.js?v=0.12.5"></script>
-  <script src="/js/tabs/logs.js?v=0.12.5"></script>
-  <script src="/js/tabs/system.js?v=0.12.5"></script>
-  <script src="/js/tabs/settings.js?v=0.12.5"></script>
-  <script src="/js/core.js?v=0.12.5"></script>
+  <script src="/js/tabs/dashboard.js?v=0.13.0"></script>
+  <script src="/js/tabs/services.js?v=0.13.0"></script>
+  <script src="/js/tabs/modules.js?v=0.13.0"></script>
+  <script src="/js/tabs/repo.js?v=0.13.0"></script>
+  <script src="/js/tabs/objects.js?v=0.13.0"></script>
+  <script src="/js/tabs/scripts.js?v=0.13.0"></script>
+  <script src="/js/tabs/structure.js?v=0.13.0"></script>
+  <script src="/js/tabs/files.js?v=0.13.0"></script>
+  <script src="/js/tabs/users.js?v=0.13.0"></script>
+  <script src="/js/tabs/analyzer.js?v=0.13.0"></script>
+  <script src="/js/tabs/backup.js?v=0.13.0"></script>
+  <script src="/js/serviceLog.js?v=0.13.0"></script>
+  <script src="/js/tabs/logs.js?v=0.13.0"></script>
+  <script src="/js/tabs/system.js?v=0.13.0"></script>
+  <script src="/js/tabs/settings.js?v=0.13.0"></script>
+  <script src="/js/core.js?v=0.13.0"></script>
 </body>
 </html>

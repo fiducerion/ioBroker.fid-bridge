@@ -276,31 +276,42 @@
     if (!id || !stateMap) return null;
     const prefix = id + '.';
     // Suche nach states deren Name auf typische online-marker passt
-    const onlineKeys = ['online', 'connected', 'alive', 'reachable', 'available'];
+    const onlineKeys  = ['online', 'connected', 'alive', 'reachable', 'available'];
     const offlineKeys = ['offline', 'unreach', 'unreachable'];
 
     for (const sid of Object.keys(stateMap)) {
       if (!sid.startsWith(prefix)) continue;
       const sub = sid.slice(prefix.length);
-      // Nur Top-Level-Childs (z.B. dev.online, nicht dev.foo.bar.online)
-      if (sub.indexOf('.') >= 0) continue;
-      const lcSub = sub.toLowerCase();
+      // Wir akzeptieren sowohl direkte childs (dev.online) als auch
+      // doppelt verschachtelt (dev.info.connection - haeufig bei iobroker)
+      const last = sub.split('.').pop().toLowerCase();
+      if (sub.indexOf('.') >= 0 && !onlineKeys.includes(last) && !offlineKeys.includes(last)) continue;
       const st = stateMap[sid];
       if (!st || st.val === null || st.val === undefined) continue;
       const v = st.val;
       const truthy = (v === true || v === 1 || v === '1' || v === 'true' || v === 'online');
       const falsy  = (v === false || v === 0 || v === '0' || v === 'false' || v === 'offline');
 
-      if (onlineKeys.includes(lcSub)) {
+      if (onlineKeys.includes(last)) {
         if (truthy) return true;
         if (falsy)  return false;
       }
-      if (offlineKeys.includes(lcSub)) {
-        if (truthy) return false;  // offline=true -> not online
+      if (offlineKeys.includes(last)) {
+        if (truthy) return false;
         if (falsy)  return true;
       }
     }
     return null;
+  }
+  // Debug-helper damit Bernd ueber console testen kann
+  if (typeof global !== 'undefined') {
+    global.MA = global.MA || {};
+    global.MA._debugDetectOnline = function(id) {
+      const result = detectOnlineState(id);
+      const prefix = id + '.';
+      const matches = Object.keys(stateMap).filter(k => k.startsWith(prefix)).slice(0, 10);
+      return { id, result, sampleStates: matches.map(k => ({ id: k, val: stateMap[k] && stateMap[k].val })) };
+    };
   }
 
   function typeIcon(t) {

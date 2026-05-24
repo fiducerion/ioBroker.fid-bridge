@@ -13,7 +13,16 @@
 
   async function refresh() {
     init();
-    await Promise.all([loadConfigAndStatus(), loadExternalList()]);
+    // System-Modul anstossen damit dessen Button-Handler/Loader laufen
+    // (Backup-Liste ist im Backup-Tab, aber die Handler kommen aus system.js)
+    if (global.MA.system) {
+      try { global.MA.system.init(); } catch (e) {}
+    }
+    await Promise.all([
+      loadConfigAndStatus(),
+      loadExternalList(),
+      global.MA.system && global.MA.system.loadBackups ? global.MA.system.loadBackups() : Promise.resolve()
+    ]);
   }
 
   async function loadConfigAndStatus() {

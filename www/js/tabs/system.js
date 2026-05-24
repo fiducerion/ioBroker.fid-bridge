@@ -573,4 +573,10 @@
   global.MA = global.MA || {};
   global.MA.tabs = global.MA.tabs || {};
   global.MA.tabs.system = { init, refresh };
+  // Expose backup-funktionen damit der Backup-Tab sie nutzen kann
+  global.MA.system = {
+    init: init,
+    loadBackups:   () => loadBackups(),
+    triggerBackup: () => triggerBackup()
+  };
 })(window);

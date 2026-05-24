@@ -149,7 +149,7 @@ body:not(.theme-loading) .ma-splash { display: none; }
 .ma-toolbar .ma-input { flex: 1 1 200px; min-width: 0; }
 .ma-obj-progress { padding: 6px 14px; color: var(--ma-muted); font-size: 12px; }
 
-.ma-obj-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--ma-gap); align-items: start; }
+.ma-obj-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--ma-gap); align-items: start; }
 @media (max-width: 1100px) {
   .ma-obj-layout { grid-template-columns: 1fr; }
 }
@@ -273,8 +273,8 @@ body:not(.theme-loading) .ma-splash { display: none; }
   .dash-stats-bar { grid-template-columns: 1fr; gap: 6px; padding: 8px; }
   .dash-stat-val { font-size: 14px; }
 }
-.ma-obj-tree   { padding: 6px 8px; height: calc(100vh - 230px); min-height: 400px; overflow: auto; font-size: 15px; line-height: 1.45; }
-.ma-obj-detail { padding: 10px 14px; max-height: calc(100vh - 230px); min-height: 200px; overflow: auto; font-size: 14px; }
+.ma-obj-tree   { padding: 6px 8px; height: calc(100vh - 180px); min-height: 500px; overflow: auto; font-size: 17px; line-height: 1.5; }
+.ma-obj-detail { padding: 10px 14px; max-height: calc(100vh - 180px); min-height: 300px; overflow: auto; font-size: 15px; }
 @media (max-width: 1100px) {
   .ma-obj-tree   { height: 70vh; min-height: 300px; }
   .ma-obj-detail { max-height: 50vh; }
@@ -288,12 +288,6 @@ body:not(.theme-loading) .ma-splash { display: none; }
 .ma-obj-tree .node-icon { width: 20px; text-align: center; opacity: 0.8; }
 .ma-obj-tree .node-id   { flex: 1; }
 .ma-obj-tree .node-name { color: var(--ma-muted); margin-left: 8px; }
-
-/* Punkt 3: Device/Channel online-Status farbig markieren */
-.ma-obj-tree .tree-row.device-online .tree-icon { color: var(--ma-ok); }
-.ma-obj-tree .tree-row.device-online .tree-name { color: var(--ma-ok); font-weight: 600; }
-.ma-obj-tree .tree-row.device-offline .tree-icon { color: var(--ma-dim); }
-.ma-obj-tree .tree-row.device-offline .tree-name { color: var(--ma-dim); }
 
 .ma-obj-detail .row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--ma-border); }
 .ma-obj-detail .row .k { color: var(--ma-muted); font-size: 12px; }
@@ -520,6 +514,19 @@ body:not(.theme-loading) .ma-splash { display: none; }
 .tree-icon { width: 16px; text-align: center; color: var(--ma-muted); flex-shrink: 0; }
 .tree-name { color: var(--ma-text); flex-shrink: 0; }
 .tree-name-extra { color: var(--ma-muted); font-size: 11px; margin-left: 8px; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Punkt 3: Device/Channel/Instance online-Status farbig markieren */
+.ma-obj-tree .tree-row.device-online .tree-icon,
+.tree-row.device-online .tree-icon { color: var(--ma-ok) !important; }
+.ma-obj-tree .tree-row.device-online .tree-name,
+.tree-row.device-online .tree-name { color: var(--ma-ok) !important; font-weight: 600; }
+.ma-obj-tree .tree-row.device-online,
+.tree-row.device-online { border-left-color: var(--ma-ok); }
+
+.ma-obj-tree .tree-row.device-offline .tree-icon,
+.tree-row.device-offline .tree-icon { color: var(--ma-dim) !important; opacity: 0.6; }
+.ma-obj-tree .tree-row.device-offline .tree-name,
+.tree-row.device-offline .tree-name { color: var(--ma-dim) !important; }
 .tree-val { margin-left: auto; padding: 1px 8px; background: rgba(0,0,0,0.18); border-radius: 3px; font-size: 11px; flex-shrink: 0; max-width: 50%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tree-val-true  { color: #81c784; font-weight: 600; }
 .tree-val-false { color: #e57373; font-weight: 600; }

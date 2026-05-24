@@ -1,73 +1,111 @@
-# iobroker.fid-bridge
+# ioBroker.fid-bridge
 
-Schlanke Verwaltungs-UI für ioBroker als Adapter. Soll mittelfristig der Komplett-Ersatz für den `admin`-Adapter sein — ohne die Features, die im Home-Setup ohnehin nicht gebraucht werden (System-Update-Notifications, ioBroker-Team-Messages, Device Manager).
+Lean web admin UI for ioBroker — a smaller, themed alternative to the
+official `admin` adapter.
 
-> **Stand: Iteration 1** — Object-Browser, Live-Logs, Theme-System mit LCARS + Slate. Adapter installieren/löschen, Instanz-CRUD und jsonConfig-Renderer folgen in Iteration 2/3.
+> ⚠️ **ALPHA / EXPERIMENTAL** ⚠️
+>
+> This adapter is in active development on a single production system.
+> Breaking changes between versions are expected. There is no support
+> guarantee. Issues are welcome but response time is voluntary. Use at
+> your own risk.
 
-## Architektur
+## Status
+
+**Iteration 1**: skeleton with Object-Browser, live logs, theme system
+(LCARS + Slate). Adapter install/remove, instance CRUD and the
+jsonConfig schema renderer are planned for iterations 2 and 3.
+
+## Architecture
 
 ```
-main.js               Adapter-Lifecycle (ready/unload/message)
-lib/server.js         Express + WebSocket auf eigenem Port
-lib/auth.js           Bearer-Token-Middleware
+main.js               Adapter lifecycle (ready/unload/message)
+lib/server.js         Express + WebSocket on its own port
+lib/auth.js           Bearer-token middleware
 lib/api/states.js     GET/PUT/DELETE /api/states/:id
-lib/api/objects.js    Object-Browser API, getObjectView-basiert + Cache
-lib/api/logs.js       Recent/Tail-Endpoints; Live über WS
-lib/api/themes.js     scannt www/themes/ und liefert Metadaten
-lib/api/system.js     Host-Info, Versionen
-lib/api/adapters.js   read-only Liste (Iter 1) — install/remove kommt
-lib/api/instances.js  read-only Liste mit alive-Status
+lib/api/objects.js    Object browser API, getObjectView-based with cache
+lib/api/logs.js       Recent/tail endpoints; live via WS
+lib/api/themes.js     scans www/themes/ and returns metadata
+lib/api/system.js     host info, versions
+lib/api/adapters.js   read-only list (iter 1) — install/remove planned
+lib/api/instances.js  read-only list with alive status
 
-www/index.html        Theme-agnostische Shell
-www/css/shell.css     Layout-Skelett, alle Farben/Radien via CSS-Variablen
-www/js/api.js         HTTP + WebSocket-Client
-www/js/theme.js       lädt /api/themes, swappt <link>-Tag
-www/js/core.js        Bootstrap, Tab-Wiring
+www/index.html        theme-agnostic shell
+www/css/shell.css     layout skeleton, all colors/radii via CSS variables
+www/js/api.js         HTTP + WebSocket client
+www/js/theme.js       loads /api/themes, swaps <link> tag
+www/js/core.js        bootstrap, tab wiring
 www/js/tabs/*.js      Dashboard, Objects, Logs
 
-www/themes/lcars/     theme.json + theme.css  — Star-Trek-LCARS
-www/themes/slate/     theme.json + theme.css  — neutrales Dark-Theme
+www/themes/lcars/     theme.json + theme.css — Star-Trek LCARS
+www/themes/slate/     theme.json + theme.css — neutral dark theme
 ```
 
-## Installation (lokal vom Pfad)
+## Installation
+
+### Option A: via Admin UI
+
+In ioBroker admin: *Adapters → Install via URL*:
+
+```
+https://github.com/fiducerion/ioBroker.fid-bridge
+```
+
+### Option B: via CLI
 
 ```bash
-cd /opt/iobroker
-iobroker url /pfad/zu/iobroker.fid-bridge
-# Instanz erzeugen:
+iobroker url https://github.com/fiducerion/ioBroker.fid-bridge
 iobroker add fid-bridge
 ```
 
-Oder über das GitHub-Repo (sobald dort gehostet):
+### Option C: pin a specific release tag
 
 ```bash
-iobroker url https://github.com/USER/iobroker.fid-bridge/tarball/main
+iobroker url https://github.com/fiducerion/ioBroker.fid-bridge/tarball/v0.12.5
 ```
 
-## Konfiguration
+## Configuration
 
-Im Admin → Instanzen → MiniAdmin → Einstellungen:
+In admin → instances → fid-bridge → settings:
 
-- **Zugriff:** eigenen Port aktivieren (Default 8095). Web-Extension folgt in Iter 2.
-- **Sicherheit:** Token-Auth aktivieren. Bei leerem Token wird beim Start einer generiert und ins Log geschrieben.
-- **UI:** Default-Theme, Start-Tab, Log-Puffergrößen.
+- **Access**: own port (default 8095). Web extension is planned for iter 2.
+- **Security**: token auth enabled by default. If left empty, a token is
+  generated on startup and written to the log.
+- **UI**: default theme, start tab, log buffer sizes.
 
-## Theme-System
+## Usage
 
-Jedes Theme ist ein Ordner unter `www/themes/<id>/` mit:
+After starting the adapter, open `http://<iobroker-host>:8095/` in your
+browser. The token from the adapter log goes in the login screen.
 
-- `theme.json` — Metadaten (Label, dark-Flag, Accent-Farbe für Vorschau)
-- `theme.css`  — überschreibt nur CSS-Variablen aus `shell.css` (`--ma-bg`, `--ma-accent`, `--ma-radius`, etc.) und optional theme-spezifische Klassen
+## Theme system
 
-Neues Theme: Ordner anlegen → Adapter neustarten → erscheint im Dropdown.
+Each theme is a folder under `www/themes/<id>/` with:
 
-## Iterations-Plan
+- `theme.json` — metadata (label, dark flag, accent color for preview)
+- `theme.css` — overrides only CSS variables from `shell.css`
+  (`--ma-bg`, `--ma-accent`, `--ma-radius`, ...) plus optional
+  theme-specific classes
 
-- **Iter 1 (dieser Stand):** Skeleton, Object-Browser, Live-Logs, 2 Themes ✅
-- **Iter 2:** Adapter install/upgrade/delete via `sendToHost cmdExec`, Instanz-CRUD (restart/enable/disable), Repository-Browser
-- **Iter 3:** jsonConfig-Schema-Renderer (text, number, select, checkbox, accordion, table) — damit Adapter-Konfigs editiert werden können
-- **Iter 4:** Script-Editor (CodeMirror), Backup-Trigger, Enums, weitere Themes
+To add a new theme: create the folder, restart the adapter, the theme
+appears in the dropdown.
 
-## Sicherheits-Hinweis
+## Roadmap
 
-MiniAdmin kann (ab Iter 2) Adapter installieren und npm-Befehle auf dem Host ausführen. **Niemals** einen offenen Port ohne `requireAuth=true` erreichbar machen. Idealerweise hinter Reverse Proxy mit Basic-Auth oder nur lokal binden (`bindHost: 127.0.0.1`).
+- **Iter 1 (current)**: skeleton, object browser, live logs, 2 themes ✅
+- **Iter 2**: adapter install/upgrade/delete via `sendToHost cmdExec`,
+  instance CRUD (restart/enable/disable), repository browser
+- **Iter 3**: jsonConfig schema renderer (text, number, select, checkbox,
+  accordion, table) — so adapter configs become editable
+- **Iter 4**: script editor (CodeMirror), backup trigger, enums, more themes
+
+## Security warning
+
+`fid-bridge` will (from iter 2 onwards) be able to install adapters and
+execute npm commands on the host. **Never** expose an open port without
+`requireAuth=true`. Ideally put it behind a reverse proxy with HTTPS, or
+bind to localhost only (`bindHost: 127.0.0.1`).
+
+## License
+
+MIT

@@ -1,3 +1,5 @@
+<img src="admin/fid-bridge.png" alt="logo" width="120" align="right"/>
+
 # ioBroker.fid-bridge
 
 Lean web admin UI for ioBroker — a smaller, themed alternative to the

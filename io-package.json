@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "fid-bridge",
-    "version": "0.12.6",
+    "version": "0.12.7",
     "news": {
+      "0.12.7": {
+        "de": "v0.12.7: Logo-Icon in der README ergaenzt.",
+        "en": "v0.12.7: Added logo icon to README."
+      },
       "0.12.6": {
         "de": "v0.12.6: Public-Release Vorbereitung. README neu auf Englisch (Installation, Tuya-Setup, ALPHA-Warnung, Roadmap). Author/Homepage/Repository auf fiducerion/GitHub. Keine funktionalen Aenderungen am Code.",
         "en": "v0.12.6: Public release preparation - new README, repository metadata, ALPHA warning."

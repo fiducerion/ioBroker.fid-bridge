@@ -269,39 +269,55 @@
 
   /**
    * Bestimmt Online/Offline-Status fuer ein device/channel/instance.
-   * Schaut nach typischen State-Namen unter der ID.
+   * Wie iobroker.admin: schaut nach mehreren typischen Mustern.
    * @returns {boolean|null} true=online, false=offline, null=unbekannt
    */
   function detectOnlineState(id) {
     if (!id || !stateMap) return null;
+
+    // Quellen in Reihenfolge der Prioritaet:
+    // 1. Direkter State unter dem Device/Channel: dev.online / dev.connected / dev.alive
+    // 2. Sub-channel info.connection oder UNREACH
+    // 3. Bei Adapter-Instances: system.adapter.<X>.alive + connected
+    const candidates = [];
+
+    // Pattern 1+2: zeile fuer zeile durch stateMap, suche unter prefix
     const prefix = id + '.';
-    // Suche nach states deren Name auf typische online-marker passt
-    const onlineKeys  = ['online', 'connected', 'alive', 'reachable', 'available'];
-    const offlineKeys = ['offline', 'unreach', 'unreachable'];
+    const onlineLeaves  = ['online', 'connected', 'alive', 'reachable', 'available', 'connection'];
+    const offlineLeaves = ['offline', 'unreach', 'unreachable'];
 
     for (const sid of Object.keys(stateMap)) {
       if (!sid.startsWith(prefix)) continue;
-      const sub = sid.slice(prefix.length);
-      // Wir akzeptieren sowohl direkte childs (dev.online) als auch
-      // doppelt verschachtelt (dev.info.connection - haeufig bei iobroker)
+      const sub  = sid.slice(prefix.length);
       const last = sub.split('.').pop().toLowerCase();
-      if (sub.indexOf('.') >= 0 && !onlineKeys.includes(last) && !offlineKeys.includes(last)) continue;
+      if (!onlineLeaves.includes(last) && !offlineLeaves.includes(last)) continue;
+
       const st = stateMap[sid];
       if (!st || st.val === null || st.val === undefined) continue;
       const v = st.val;
-      const truthy = (v === true || v === 1 || v === '1' || v === 'true' || v === 'online');
+      const truthy = (v === true || v === 1 || v === '1' || v === 'true' || v === 'online' || v === 'connected');
       const falsy  = (v === false || v === 0 || v === '0' || v === 'false' || v === 'offline');
+      if (!truthy && !falsy) continue;
 
-      if (onlineKeys.includes(last)) {
-        if (truthy) return true;
-        if (falsy)  return false;
-      }
-      if (offlineKeys.includes(last)) {
-        if (truthy) return false;
-        if (falsy)  return true;
+      if (onlineLeaves.includes(last)) {
+        candidates.push({ result: truthy, depth: sub.split('.').length, sid });
+      } else {
+        candidates.push({ result: !truthy, depth: sub.split('.').length, sid });
       }
     }
-    return null;
+
+    // Pattern 3: bei Adapter-Instances (system.adapter.X.0) auch system.adapter.X.0.alive
+    if (id.startsWith('system.adapter.')) {
+      const aliveSt = stateMap[id + '.alive'];
+      if (aliveSt && typeof aliveSt.val === 'boolean') {
+        candidates.push({ result: aliveSt.val, depth: 1, sid: id + '.alive' });
+      }
+    }
+
+    if (!candidates.length) return null;
+    // Naechster Treffer mit kleinster Tiefe gewinnt (direkter Sub-State vor verschachteltem)
+    candidates.sort((a, b) => a.depth - b.depth);
+    return candidates[0].result;
   }
   // Debug-helper damit Bernd ueber console testen kann
   if (typeof global !== 'undefined') {
@@ -309,7 +325,7 @@
     global.MA._debugDetectOnline = function(id) {
       const result = detectOnlineState(id);
       const prefix = id + '.';
-      const matches = Object.keys(stateMap).filter(k => k.startsWith(prefix)).slice(0, 10);
+      const matches = Object.keys(stateMap).filter(k => k.startsWith(prefix)).slice(0, 20);
       return { id, result, sampleStates: matches.map(k => ({ id: k, val: stateMap[k] && stateMap[k].val })) };
     };
   }

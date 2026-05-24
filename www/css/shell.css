@@ -273,8 +273,8 @@ body:not(.theme-loading) .ma-splash { display: none; }
   .dash-stats-bar { grid-template-columns: 1fr; gap: 6px; padding: 8px; }
   .dash-stat-val { font-size: 14px; }
 }
-.ma-obj-tree   { padding: 6px 8px; height: calc(100vh - 180px); min-height: 500px; overflow: auto; font-size: 17px; line-height: 1.5; }
-.ma-obj-detail { padding: 10px 14px; max-height: calc(100vh - 180px); min-height: 300px; overflow: auto; font-size: 15px; }
+.ma-obj-tree   { padding: 8px 10px; height: calc(100vh - 180px); min-height: 500px; overflow: auto; font-size: 19px; line-height: 1.55; }
+.ma-obj-detail { padding: 12px 16px; max-height: calc(100vh - 180px); min-height: 300px; overflow: auto; font-size: 16px; }
 @media (max-width: 1100px) {
   .ma-obj-tree   { height: 70vh; min-height: 300px; }
   .ma-obj-detail { max-height: 50vh; }
@@ -506,14 +506,14 @@ body:not(.theme-loading) .ma-splash { display: none; }
 .grp-head { display: flex; align-items: center; gap: 10px; padding: 4px 14px 8px; flex-wrap: wrap; }
 
 /* Object-Baum */
-.tree-row { display: flex; align-items: center; gap: 6px; padding: 4px 6px 4px 6px; cursor: pointer; user-select: none; font-family: var(--ma-font-mono); font-size: 12px; border-left: 3px solid transparent; min-height: 24px; }
+.tree-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; cursor: pointer; user-select: none; font-family: var(--ma-font); font-size: inherit; border-left: 3px solid transparent; min-height: 30px; }
 .tree-row:hover { background: var(--ma-bg-2); }
 .tree-row.selected { background: var(--ma-bg-2); border-left-color: var(--ma-accent); color: var(--ma-text); }
-.tree-toggle { display: inline-block; width: 14px; text-align: center; color: var(--ma-muted); font-size: 11px; flex-shrink: 0; }
-.tree-toggle-blank { color: transparent; }
-.tree-icon { width: 16px; text-align: center; color: var(--ma-muted); flex-shrink: 0; }
+.tree-toggle { width: 18px; flex-shrink: 0; font-size: 0.95em; }
+.tree-icon { width: 22px; text-align: center; color: var(--ma-muted); flex-shrink: 0; font-size: 1.1em; }
 .tree-name { color: var(--ma-text); flex-shrink: 0; }
-.tree-name-extra { color: var(--ma-muted); font-size: 11px; margin-left: 8px; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-name-extra { color: var(--ma-muted); font-size: 0.78em; margin-left: 10px; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-toggle-blank { color: transparent; }
 
 /* Punkt 3: Device/Channel/Instance online-Status farbig markieren */
 .ma-obj-tree .tree-row.device-online .tree-icon,
@@ -527,7 +527,7 @@ body:not(.theme-loading) .ma-splash { display: none; }
 .tree-row.device-offline .tree-icon { color: var(--ma-dim) !important; opacity: 0.6; }
 .ma-obj-tree .tree-row.device-offline .tree-name,
 .tree-row.device-offline .tree-name { color: var(--ma-dim) !important; }
-.tree-val { margin-left: auto; padding: 1px 8px; background: rgba(0,0,0,0.18); border-radius: 3px; font-size: 11px; flex-shrink: 0; max-width: 50%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-val { margin-left: auto; padding: 2px 10px; background: rgba(0,0,0,0.18); border-radius: 3px; font-size: 0.82em; flex-shrink: 0; max-width: 50%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tree-val-true  { color: #81c784; font-weight: 600; }
 .tree-val-false { color: #e57373; font-weight: 600; }
 .tree-val-num   { color: #64b5f6; }

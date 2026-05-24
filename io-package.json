@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "fid-bridge",
-    "version": "0.13.1",
+    "version": "0.13.2",
     "news": {
+      "0.13.2": {
+        "de": "v0.13.2: Drei harte Folgefixes.\n(1) Datenpunkte-Tree-Schrift jetzt 19px (vorher 17px), plus die tree-row CSS hatte ein hardcodiertes font-size:12px das die Tree-Schrift uebersteuert hat - jetzt erbt es vom Parent. Toggle/Icon/Name Komponenten skalieren mit em-Einheiten mit.\n(2) Online-Status Detection erweitert nach Admin-Vorbild:\n    - Pattern 1: direkter Sub-State dev.online/.connected/.alive/.connection\n    - Pattern 2: tiefer Sub-State info.connection / UNREACH (haeufig\n      bei Zigbee/Hue/Tuya-Devices)\n    - Pattern 3: bei system.adapter.X.0 die .alive State\n    Treffer mit kleinster Tiefe gewinnt. Plus String-Werte 'online'/'offline'/'connected' werden erkannt.\n(3) ioBroker-Theme komplett neu nach admin-master Sourcecode-Recherche. Echte Material-UI Dark Palette: Background #303030, Paper #424242, Accent Blue #2196f3, Success #06960E, Error #D92626. Font Segoe UI / Tahoma / Arial. Card-Elevation mit echtem MUI-Schatten. Pills mit transparenten Hintergrundfarben.",
+        "en": "v0.13.2: Tree font really larger (was overridden), online detection multi-pattern like admin, ioBroker theme rebuilt from admin source."
+      },
       "0.13.1": {
         "de": "v0.13.1: Vier Folge-Fixes zu v0.13.0.\n(1) Online/Offline-Farben jetzt wirklich sichtbar - CSS-Specificity-Konflikt mit den tree-row/tree-icon Default-Regeln behoben (!important + duale Selektoren).\n(2) Backup-Tab liest jetzt direkt aus dem Adapter-Objekt statt aus dem getCfg-Snapshot - gespeicherte Schedules werden korrekt angezeigt auch nach Save ohne Adapter-Restart.\n(3) Backup-Liste (Upload/Restore/Delete) ist vom System-Tab in den Backup-Tab umgezogen. System-Tab enthaelt jetzt nur noch Adapter-Konfig, Hosts, Custom-Links.\n(4) Schrift im Datenpunkte-Tree weiter erhoeht: 17px, Tree-Hoehe genutzt 100vh-180px, line-height 1.5. Layout Tree:Detail jetzt 3:2 (vorher 2:1).",
         "en": "v0.13.1: Online color fix, backup schedule persistence fix, backup card moved to backup tab, larger tree fonts."

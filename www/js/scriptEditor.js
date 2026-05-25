@@ -42,6 +42,7 @@
           <button class="ma-btn ma-btn-ghost" id="edCopyBtn" title="Quellcode in die Zwischenablage kopieren">📋 Kopieren</button>
           <button class="ma-btn ma-btn-ghost" id="edPasteBtn" title="Aus der Zwischenablage einfügen (überschreibt den Quellcode!)">📥 Einfügen</button>
           <button class="ma-btn ma-btn-ghost" id="edToggleBtn">Aktivieren</button>
+          <button class="ma-btn ma-btn-ghost" id="edOpenInAdminBtn" title="In iobroker.admin JavaScript-Editor öffnen (separater Tab)">↗ in Admin</button>
           <button class="ma-btn ma-btn-ghost" id="edSaveBtn">Speichern</button>
           <button class="ma-modal-close" id="edCloseBtn">Schließen</button>
         </div>
@@ -54,6 +55,28 @@
     document.getElementById('edCopyBtn').addEventListener('click', copyToClipboard);
     document.getElementById('edPasteBtn').addEventListener('click', pasteFromClipboard);
     document.getElementById('edCloseBtn').addEventListener('click', close);
+    document.getElementById('edOpenInAdminBtn').addEventListener('click', openInAdmin);
+  }
+
+  function openInAdmin() {
+    if (!state || !state.id) return;
+    // ioBroker.admin URL Struktur:
+    //   http://<host>:8081/#tab-javascript/0/script.js.common.MyScript
+    // Wir koennen den User-Host nicht garantieren (8081 ist default aber konfigurierbar),
+    // daher fragen wir den Server nach der Admin-URL.
+    const id = state.id;
+    fetch('/api/system/admin-url', { headers: global.MA.api.headers ? global.MA.api.headers() : {} })
+      .then(r => r.json())
+      .then(j => {
+        const base = (j && j.adminUrl) || (location.protocol + '//' + location.hostname + ':8081');
+        const url = base.replace(/\/$/, '') + '/#tab-javascript/0/' + encodeURIComponent(id);
+        window.open(url, '_blank');
+      })
+      .catch(() => {
+        // Fallback ohne API-Call
+        const url = location.protocol + '//' + location.hostname + ':8081/#tab-javascript/0/' + encodeURIComponent(id);
+        window.open(url, '_blank');
+      });
   }
 
   function getEditorValue() {

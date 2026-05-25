@@ -1,6 +1,6 @@
 {
   "name": "iobroker.fid-bridge",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "Fiducerion Bridge — Verwaltungs-UI fuer Fiducerion Core (ioBroker-basiert). TOTP-2FA, Module-Mgmt, Repository-Browser, Live-Terminal.",
   "author": {
     "name": "fiducerion",

@@ -256,9 +256,30 @@
 
   function applyFilter() {
     const q = (($('objFilter') && $('objFilter').value) || '').toLowerCase().trim();
-    filtered = q
-      ? items.filter(it => it.id.toLowerCase().includes(q) || (it.name && it.name.toLowerCase().includes(q)))
-      : items.slice();
+    if (!q) {
+      filtered = items.slice();
+    } else {
+      // Schritt 1: direkte Treffer (id ODER name)
+      const directHits = items.filter(it => it.id.toLowerCase().includes(q) || (it.name && it.name.toLowerCase().includes(q)));
+      // Schritt 2: wenn ein Device/Channel/Folder matcht, nimm ALLE States darunter
+      // mit damit der User die Inhalte sehen kann. Wie iobroker.admin.
+      const includePaths = new Set();
+      for (const hit of directHits) {
+        if (hit.type === 'device' || hit.type === 'channel' || hit.type === 'folder' || hit.type === 'instance') {
+          includePaths.add(hit.id + '.');
+        }
+      }
+      const expanded = new Set(directHits.map(it => it.id));
+      if (includePaths.size > 0) {
+        for (const it of items) {
+          if (expanded.has(it.id)) continue;
+          for (const pfx of includePaths) {
+            if (it.id.startsWith(pfx)) { expanded.add(it.id); break; }
+          }
+        }
+      }
+      filtered = items.filter(it => expanded.has(it.id));
+    }
     // Bei aktiver Suche: alle Folder aufklappen, damit Treffer sichtbar
     if (q) {
       treeCollapsed.clear();

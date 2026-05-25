@@ -87,7 +87,9 @@
 .ma-pill-info { background: #dbeafe; color: #1e3a8a; box-shadow: 0 0 0 1px rgba(3,105,161,0.3) inset; }
 
 .ma-btn { background: linear-gradient(135deg, #7c3aed, #2563eb); color: #fff; }
-.ma-btn:hover { filter: brightness(1.1); }
+.ma-btn:hover { filter: brightness(0.92); color: #fff; }
+.ma-btn-ghost { background: transparent; color: var(--ma-text); border: 1px solid var(--ma-border-strong); }
+.ma-btn-ghost:hover { background: var(--ma-panel-2); color: var(--ma-text); border-color: var(--ma-accent); }
 
 .ma-input, .ma-select, .ma-textarea, .cfg-raw { background: #fff; color: var(--ma-text); }
 .ma-table thead th { background: var(--ma-panel-2); color: var(--ma-text); }

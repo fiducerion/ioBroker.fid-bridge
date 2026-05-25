@@ -3,6 +3,8 @@
   const { $, escapeHtml } = global.MA.ui;
   let initialized = false;
   let items = [];
+  let selectedScriptId = null;
+  try { selectedScriptId = localStorage.getItem('fid-bridge.scripts.lastOpened') || null; } catch (e) {}
   const collapsed = new Set(); // folder-pfade, die kollabiert sind
 
   function init() {
@@ -172,8 +174,9 @@
 
     node.scripts.sort((a, b) => a.leafName.localeCompare(b.leafName)).forEach(s => {
       const row = document.createElement('div');
-      row.className = 'scr-script ' + (s.enabled ? 'scr-on' : 'scr-off');
+      row.className = 'scr-script ' + (s.enabled ? 'scr-on' : 'scr-off') + (s.id === selectedScriptId ? ' scr-selected' : '');
       row.style.paddingLeft = (depth * 18 + 8) + 'px';
+      row.dataset.id = s.id;
       const icon = s.engineType === 'Blockly' ? '🧩' : s.engineType === 'TypeScript' ? '🟦' : '📜';
       row.innerHTML = `
         <span class="scr-script-icon">${icon}</span>
@@ -188,6 +191,13 @@
           <button class="ma-btn ma-btn-ghost ma-btn-xs ma-btn-danger expert-only" data-act="delete" data-id="${escapeHtml(s.id)}" title="Löschen">🗑</button>
         </span>
       `;
+      // Klick auf die Zeile (ausser Buttons) markiert das Skript
+      row.addEventListener('click', (ev) => {
+        if (ev.target.closest('button')) return;
+        selectedScriptId = s.id;
+        try { localStorage.setItem(LAST_SCRIPT_LS_KEY, s.id); } catch (e) {}
+        render();
+      });
       row.querySelectorAll('button[data-act]').forEach(btn => {
         btn.addEventListener('click', async (ev) => {
           ev.stopPropagation();

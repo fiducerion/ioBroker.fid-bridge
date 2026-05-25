@@ -94,8 +94,9 @@ body { font-weight: 500; }
 .ma-pill-info { background: #d3e3f3; color: #1e3a8a; }
 
 .ma-btn { background: linear-gradient(135deg, #cc6633, #b87b1f); color: #fff; border-radius: 24px; padding-left: 14px; padding-right: 14px; }
-.ma-btn:hover { filter: brightness(1.05); }
+.ma-btn:hover { filter: brightness(0.92); color: #fff; }
 .ma-btn-ghost { background: transparent; color: var(--ma-text); border-color: var(--ma-border-strong); border-radius: 24px; }
+.ma-btn-ghost:hover { background: var(--ma-panel-2); color: var(--ma-text); border-color: var(--ma-accent); }
 
 .ma-input, .ma-select, .ma-textarea, .cfg-raw { background: #fff; color: var(--ma-text); border-color: var(--ma-border-strong); }
 .ma-table thead th { background: var(--ma-panel-2); color: var(--ma-accent); }

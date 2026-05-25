@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "fid-bridge",
-    "version": "0.13.3",
+    "version": "0.13.4",
     "news": {
+      "0.13.4": {
+        "de": "v0.13.4: Fuenf gezielte Fehlerbehebungen.\n(1) Backup-Plan funktionierte nicht:\n    - detectHost() wurde synchron ohne adapter-Arg aufgerufen und lieferte Promise statt Hostname-String -> 'Parameter hostName needs to be of type string'.\n    - scheduleNext las stale-Snapshot statt Adapter-Objekt -> 'Plan aus' obwohl gespeichert.\n    - Save-Endpoint await scheduleNext, alles direkt synchron.\n(2) Datenpunkte-Suche: wenn ein Device/Channel matcht, werden jetzt ALLE States darunter mit-eingeblendet (wie in admin).\n(3) Light-Themes Button-Hover: Text-Farbe explizit gesetzt, Hover-Hintergrund auf panel-2 statt panel (verhindert weiss-auf-weiss).\n(4) Automationen: Skripte sind jetzt anklickbar im Baum, markiertes Skript zeigt Akzent-Border + farbigen Namen. Letztes markiertes Skript persistiert in localStorage.\n(5) Skript-Editor: Neuer Button '↗ in Admin' oeffnet das Skript im nativen iobroker.admin JavaScript-Tab in neuem Browser-Tab. Backend ermittelt die Admin-URL.",
+        "en": "v0.13.4: backup hostName bug, schedule reading wrong cfg, smart device search, light theme button readability, selectable scripts, open-in-admin button."
+      },
       "0.13.3": {
         "de": "v0.13.3: Sieben Folge-Fixes nach User-Feedback.\n(1) Datenpunkte-Tree: Devicename (common.name) jetzt auch sichtbar wenn Filter angewandt - Eltern-Devices werden mit Original-Object verlinkt damit der schoene Name angezeigt wird. Plus Name in groesserer Schrift und Akzent-Farbe.\n(2) Header neu sortiert: Stardate/Datum links vom Such-Button.\n(3) Stardate nur in LCARS-Themes - andere Themes zeigen DD.MM.YYYY.\n(4) Theme/Refresh/Expert aus Sidebar entfernt, in Einstellungen-Tab.\n(5) Neue UI-Voreinstellung 'Start-Tab' wird in localStorage gespeichert.\n(6) Repository 'Aktualisieren' macht jetzt echtes 'iob update' via POST /api/repo/refresh - holt das Repository neu vom Server statt aus dem 5min-Cache. Funktional aequivalent zum Admin-Aktualisieren.\n(7) Neuer Bereich 'Von GitHub/NPM installieren' im Repository-Tab. Akzeptiert npm-Namen, GitHub-URL oder Tarball-URL. Output landet im Terminal-Stream.",
         "en": "v0.13.3: Filter-aware device names, header reorder, theme-aware datetime, settings moved to settings tab, real repo update, github/npm install field."

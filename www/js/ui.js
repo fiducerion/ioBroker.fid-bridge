@@ -54,12 +54,22 @@
     const el = $('stardate'); if (!el) return;
     function tick() {
       const now = new Date();
-      const start = new Date(now.getFullYear(), 0, 0);
-      const day = Math.floor((now - start) / 86400000);
-      const frac = (now.getHours() * 60 + now.getMinutes()) / 1440;
-      const sd = (now.getFullYear() - 2000) * 1000 + day + frac;
       const time = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      el.textContent = `★ ${sd.toFixed(2)} · ${time}`;
+      // Punkt 3: Stardate nur in den LCARS-Themes, sonst normales Datum
+      const active = (global.MA.theme && global.MA.theme.getActive && global.MA.theme.getActive()) || '';
+      const isLcars = /^lcars/i.test(String(active));
+      if (isLcars) {
+        const start = new Date(now.getFullYear(), 0, 0);
+        const day = Math.floor((now - start) / 86400000);
+        const frac = (now.getHours() * 60 + now.getMinutes()) / 1440;
+        const sd = (now.getFullYear() - 2000) * 1000 + day + frac;
+        el.innerHTML = `★ ${sd.toFixed(2)} · ${time}`;
+      } else {
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = now.getFullYear();
+        el.innerHTML = `${dd}.${mm}.${yy} · ${time}`;
+      }
     }
     tick();
     setInterval(tick, 1000);

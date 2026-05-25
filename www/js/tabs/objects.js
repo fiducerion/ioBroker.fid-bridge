@@ -348,6 +348,14 @@
   function buildTree(list) {
     // Baut einen Baum aus flachen Items basierend auf Punkten in der ID.
     // Knoten: { name, fullId, item (falls Object existiert), children: Map }
+    //
+    // Trick fuer gefilterte Listen: wenn ein Eltern-Pfad (z.B. das Device) NICHT
+    // in der gefilterten Liste ist (z.B. weil Filter nur ".noLocalConnection"
+    // matcht), trotzdem das Original-Object aus items[] anhaengen damit der
+    // friendly name angezeigt werden kann.
+    const itemsById = Object.create(null);
+    for (const it of items) itemsById[it.id] = it;
+
     const root = { name: '', fullId: '', item: null, children: new Map() };
     for (const it of list) {
       const parts = it.id.split('.');
@@ -356,12 +364,15 @@
         const segment = parts[i];
         const fullId = parts.slice(0, i + 1).join('.');
         if (!node.children.has(segment)) {
+          // Lookup das Original-Object auch wenn dieser Pfad selbst nicht im
+          // Filter-Result ist - damit n.item.name den schoenen Namen zeigt.
+          const itemForPath = itemsById[fullId] || null;
           node.children.set(segment, {
-            name: segment, fullId, item: null, children: new Map()
+            name: segment, fullId, item: itemForPath, children: new Map()
           });
         }
         node = node.children.get(segment);
-        // Letztes Segment: das ist der Item selbst
+        // Letztes Segment: ist eh das Item selbst
         if (i === parts.length - 1) node.item = it;
       }
     }
@@ -422,7 +433,11 @@
       const showToggle = n.hasChildren;
       const togIcon = showToggle ? (n.isCollapsed ? '▸' : '▾') : '';
       const idDisplay = n.item ? n.item.id : n.fullId;
-      const nameDisplay = n.item && n.item.name && n.item.name !== n.name ? n.item.name : '';
+      // Punkt 1: schoenen Device-/Channel-/State-Namen anzeigen wenn vorhanden.
+      // n.name ist immer das letzte ID-Segment (z.B. "bf6458jx9qqkvqdc"),
+      // n.item.name ist der common.name (z.B. "Rollladen Kueche EG").
+      const friendly = (n.item && n.item.name) ? String(n.item.name).trim() : '';
+      const nameDisplay = (friendly && friendly !== n.name) ? friendly : '';
       const indentPx = (n.depth - 1) * 14;
       const isState = n.item && n.item.type === 'state';
       const stateId = isState ? n.item.id : '';

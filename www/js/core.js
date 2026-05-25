@@ -55,13 +55,31 @@
     document.getElementById('appVersion').textContent = 'v' + (info.version || '0.0.0');
 
     const wantedTab = new URL(location.href).searchParams.get('tab');
-    activeTab = wantedTab || info.defaultStartTab || 'dashboard';
+    // Punkt 5: Start-Tab aus localStorage (vom Settings-Tab gesetzt), fallback auf Server-Config
+    const userStartTab = localStorage.getItem('fiducerion.startTab');
+    activeTab = wantedTab || userStartTab || info.defaultStartTab || 'dashboard';
     ui.buildTabs(activeTab, onTabChange);
     ui.startClock();
 
     document.getElementById('reloadAllBtn').addEventListener('click', refreshActive);
     const gsBtn = document.getElementById('globalSearchBtn');
     if (gsBtn) gsBtn.addEventListener('click', () => global.MA.globalSearch && global.MA.globalSearch.show());
+
+    // Start-Tab-Auswahl im Settings-Tab befuellen + Persistenz
+    const stSel = document.getElementById('startTabSelect');
+    if (stSel) {
+      // Optionen aus ui.TABS holen (ui.js exportiert sie via MA.ui._tabList wenn vorhanden,
+      // sonst aus dem DOM die data-tab Attribute der gerenderten Tabs lesen)
+      const tabIds = Array.from(document.querySelectorAll('#navTabs .ma-tab'))
+        .map(b => ({ id: b.dataset.tab, label: (b.querySelector('.ma-tab-label') || b).textContent.trim() }));
+      stSel.innerHTML = tabIds.map(t => `<option value="${t.id}">${t.label || t.id}</option>`).join('');
+      const cur = userStartTab || activeTab;
+      stSel.value = cur;
+      stSel.addEventListener('change', () => {
+        localStorage.setItem('fiducerion.startTab', stSel.value);
+        global.MA.toast('Start-Tab gespeichert: ' + stSel.options[stSel.selectedIndex].text, 'ok');
+      });
+    }
 
     // Refresh-Select
     const refSel = document.getElementById('refreshSelect');

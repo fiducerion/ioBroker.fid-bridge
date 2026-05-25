@@ -7,12 +7,58 @@
   function init() {
     if (initialized) return;
     initialized = true;
-    $('repoReload') && $('repoReload').addEventListener('click', () => load(true));
+    $('repoReload') && $('repoReload').addEventListener('click', doHardRefresh);
     $('repoSearch') && $('repoSearch').addEventListener('input', render);
     $('repoFilter') && $('repoFilter').addEventListener('change', render);
+    $('repoInstallUrlBtn') && $('repoInstallUrlBtn').addEventListener('click', installUrl);
+    const inp = $('repoUrlInput');
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') installUrl(); });
   }
 
   async function refresh() { init(); if (!items.length) await load(); }
+
+  async function doHardRefresh() {
+    // Punkt 6: echtes "iob update" via POST /api/repo/refresh
+    const btn = $('repoReload');
+    if (btn) { btn.disabled = true; btn.textContent = '↻ aktualisiere...'; }
+    try {
+      const r = await global.MA.api.refreshRepo();
+      if (r && r.ok) {
+        global.MA.toast('Repository neu geladen (' + (r.adapterCount || '?') + ' Module)', 'ok');
+      } else {
+        global.MA.toast('Refresh fehlgeschlagen: ' + (r && r.error || 'unbekannt'), 'bad');
+      }
+      // dann mit noCache neu rendern
+      await load(true);
+    } catch (e) {
+      global.MA.toast('Fehler: ' + e.message, 'bad');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '↻ Aktualisieren'; }
+    }
+  }
+
+  async function installUrl() {
+    const inp = $('repoUrlInput'); if (!inp) return;
+    const url = inp.value.trim();
+    if (!url) { global.MA.toast('Bitte URL oder npm-Name eingeben', 'warn'); return; }
+    if (!confirm('Adapter installieren von:\n\n' + url + '\n\nFortfahren?')) return;
+    try {
+      const r = await global.MA.api.installRepoUrl(url);
+      if (r && r.ok) {
+        global.MA.toast('Installation gestartet, siehe Terminal', 'info');
+        if (r.runId && global.MA.terminal) {
+          global.MA.terminal.show(r.runId, 'Adapter-Install: ' + url);
+        }
+        inp.value = '';
+        // Repo-Liste in 10s neu laden (Adapter sollte dann da sein)
+        setTimeout(() => load(true), 10000);
+      } else {
+        global.MA.toast('Fehler: ' + (r && r.error || 'unbekannt'), 'bad');
+      }
+    } catch (e) {
+      global.MA.toast('Fehler: ' + e.message, 'bad');
+    }
+  }
 
   async function load(noCache) {
     const tbody = document.querySelector('#repoTable tbody');

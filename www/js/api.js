@@ -65,6 +65,8 @@
     upgradeAdapter:   (name, version) => req('POST', '/api/adapters/upgrade', { name, version }),
     uninstallAdapter: (name) => req('DELETE', '/api/adapters/' + encodeURIComponent(name)),
     listRepo:      (noCache) => req('GET', '/api/repo' + (noCache ? '?noCache=1' : '')),
+    refreshRepo:   ()        => req('POST', '/api/repo/refresh', {}),
+    installRepoUrl:(url)     => req('POST', '/api/repo/install-url', { url }),
 
     // Instances
     listInstances: (withStats) => req('GET', '/api/instances' + (withStats ? '?stats=1' : '')),

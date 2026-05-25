@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/css/shell.css?v=0.13.2" />
-  <link rel="stylesheet" id="themeStyle" href="/themes/lcars/theme.css?v=0.13.2" />
+  <link rel="stylesheet" href="/css/shell.css?v=0.13.3" />
+  <link rel="stylesheet" id="themeStyle" href="/themes/lcars/theme.css?v=0.13.3" />
 </head>
 <body class="theme-loading">
 
@@ -49,28 +49,6 @@
           <span class="ma-badge ma-badge-offline" id="connState">offline</span>
         </div>
 
-        <div class="ma-theme-row">
-          <label for="themeSelect" class="ma-status-label">THEME</label>
-          <select id="themeSelect" class="ma-select"></select>
-        </div>
-
-        <div class="ma-theme-row">
-          <label for="refreshSelect" class="ma-status-label">REFRESH</label>
-          <select id="refreshSelect" class="ma-select">
-            <option value="0">aus</option>
-            <option value="5">5 s</option>
-            <option value="15">15 s</option>
-            <option value="30" selected>30 s</option>
-            <option value="60">60 s</option>
-            <option value="300">5 min</option>
-          </select>
-        </div>
-
-        <div class="ma-theme-row">
-          <label for="expertToggle" class="ma-status-label">EXPERT</label>
-          <input type="checkbox" id="expertToggle" class="ma-toggle" />
-        </div>
-
         <button class="ma-btn ma-btn-ghost ma-btn-block" id="logoutBtn" hidden>Abmelden</button>
 
         <div class="ma-version" id="appVersion">v0.12.1</div>
@@ -87,8 +65,8 @@
           <h1 id="appTitle">Fiducerion Bridge</h1>
           <div class="ma-top-sub" id="appSubtitle">Teil von Fiducerion Core <span id="expertBadge" hidden class="ma-pill ma-pill-warn" style="margin-left:8px;font-size:10px;">EXPERT</span></div>
         </div>
-        <button class="ma-btn ma-btn-ghost ma-top-search" id="globalSearchBtn" title="Globale Suche (Taste /)">🔍 <span class="ma-top-search-text">Suchen</span></button>
         <div class="ma-top-time" id="stardate">★ —</div>
+        <button class="ma-btn ma-btn-ghost ma-top-search" id="globalSearchBtn" title="Globale Suche (Taste /)">🔍 <span class="ma-top-search-text">Suchen</span></button>
       </header>
 
       <section class="ma-stats" id="statsStrip">
@@ -179,6 +157,24 @@
         <!-- Repository -->
         <section class="ma-tabpage" data-tab="repo">
           <div class="ma-card">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">VON GITHUB / NPM INSTALLIEREN</div>
+            </div>
+            <div style="padding: 14px 16px;">
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <input class="ma-input" id="repoUrlInput" style="flex: 1; min-width: 300px;"
+                  placeholder="z.B. iobroker.tankerkoenig  oder  https://github.com/fiducerion/ioBroker.fid-smartlife" />
+                <button class="ma-btn" id="repoInstallUrlBtn">Installieren</button>
+              </div>
+              <div class="ma-muted" style="font-size: 12px; margin-top: 8px;">
+                Akzeptiert NPM-Adapter-Name (<code>iobroker.xyz</code>),
+                GitHub-Repo-URL oder Tarball-URL. Output wird im Terminal angezeigt.
+              </div>
+            </div>
+          </div>
+
+          <div class="ma-card" style="margin-top: 14px;">
             <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">REPOSITORY (VERFÜGBARE MODULE)</div>
               <div class="ma-card-badges">
                 <select class="ma-select" id="repoFilter">
@@ -188,7 +184,7 @@
                   <option value="available">noch nicht installiert</option>
                 </select>
                 <input class="ma-input ma-input-sm" id="repoSearch" placeholder="Suche..." />
-                <button class="ma-btn ma-btn-ghost" id="repoReload">Aktualisieren</button>
+                <button class="ma-btn ma-btn-ghost" id="repoReload" title="Repository erneut vom Server holen (entspricht 'iob update')">↻ Aktualisieren</button>
               </div>
             </div>
             <div class="ma-table-scroll" style="max-height:none">
@@ -518,6 +514,39 @@
             <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">EINSTELLUNGEN</div></div>
             <div class="ma-card-body" id="settingsBody">Lade...</div>
           </div>
+
+          <div class="ma-card" style="margin-top: 14px;">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">UI-VOREINSTELLUNGEN</div>
+            </div>
+            <div class="ma-card-body" style="padding: 14px 16px;">
+              <div class="ma-form-row" style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                <label for="themeSelect" style="min-width: 160px;">Theme:</label>
+                <select id="themeSelect" class="ma-select" style="min-width: 220px;"></select>
+              </div>
+              <div class="ma-form-row" style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                <label for="refreshSelect" style="min-width: 160px;">Auto-Refresh:</label>
+                <select id="refreshSelect" class="ma-select" style="min-width: 220px;">
+                  <option value="0">aus</option>
+                  <option value="5">5 s</option>
+                  <option value="15">15 s</option>
+                  <option value="30" selected>30 s</option>
+                  <option value="60">60 s</option>
+                  <option value="300">5 min</option>
+                </select>
+              </div>
+              <div class="ma-form-row" style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                <label for="startTabSelect" style="min-width: 160px;">Start-Tab:</label>
+                <select id="startTabSelect" class="ma-select" style="min-width: 220px;"></select>
+              </div>
+              <div class="ma-form-row" style="display: flex; gap: 16px; align-items: center;">
+                <label for="expertToggle" style="min-width: 160px;">Expert-Modus:</label>
+                <input type="checkbox" id="expertToggle" class="ma-toggle" />
+                <span class="ma-muted" style="font-size: 13px;">Zeigt zusaetzliche Buttons wie 🗑 Loeschen</span>
+              </div>
+            </div>
+          </div>
         </section>
 
       </main>
@@ -526,33 +555,33 @@
 
   <div id="toastHost" class="ma-toast-host" aria-live="polite"></div>
 
-  <script src="/js/i18n.js?v=0.13.2"></script>
-  <script src="/js/api.js?v=0.13.2"></script>
-  <script src="/js/toast.js?v=0.13.2"></script>
-  <script src="/js/theme.js?v=0.13.2"></script>
-  <script src="/js/ui.js?v=0.13.2"></script>
-  <script src="/js/expertMode.js?v=0.13.2"></script>
-  <script src="/js/totp.js?v=0.13.2"></script>
-  <script src="/js/globalSearch.js?v=0.13.2"></script>
-  <script src="/js/mobileNav.js?v=0.13.2"></script>
-  <script src="/js/terminal.js?v=0.13.2"></script>
-  <script src="/js/configEditor.js?v=0.13.2"></script>
-  <script src="/js/scriptEditor.js?v=0.13.2"></script>
-  <script src="/js/tabs/dashboard.js?v=0.13.2"></script>
-  <script src="/js/tabs/services.js?v=0.13.2"></script>
-  <script src="/js/tabs/modules.js?v=0.13.2"></script>
-  <script src="/js/tabs/repo.js?v=0.13.2"></script>
-  <script src="/js/tabs/objects.js?v=0.13.2"></script>
-  <script src="/js/tabs/scripts.js?v=0.13.2"></script>
-  <script src="/js/tabs/structure.js?v=0.13.2"></script>
-  <script src="/js/tabs/files.js?v=0.13.2"></script>
-  <script src="/js/tabs/users.js?v=0.13.2"></script>
-  <script src="/js/tabs/analyzer.js?v=0.13.2"></script>
-  <script src="/js/tabs/backup.js?v=0.13.2"></script>
-  <script src="/js/serviceLog.js?v=0.13.2"></script>
-  <script src="/js/tabs/logs.js?v=0.13.2"></script>
-  <script src="/js/tabs/system.js?v=0.13.2"></script>
-  <script src="/js/tabs/settings.js?v=0.13.2"></script>
-  <script src="/js/core.js?v=0.13.2"></script>
+  <script src="/js/i18n.js?v=0.13.3"></script>
+  <script src="/js/api.js?v=0.13.3"></script>
+  <script src="/js/toast.js?v=0.13.3"></script>
+  <script src="/js/theme.js?v=0.13.3"></script>
+  <script src="/js/ui.js?v=0.13.3"></script>
+  <script src="/js/expertMode.js?v=0.13.3"></script>
+  <script src="/js/totp.js?v=0.13.3"></script>
+  <script src="/js/globalSearch.js?v=0.13.3"></script>
+  <script src="/js/mobileNav.js?v=0.13.3"></script>
+  <script src="/js/terminal.js?v=0.13.3"></script>
+  <script src="/js/configEditor.js?v=0.13.3"></script>
+  <script src="/js/scriptEditor.js?v=0.13.3"></script>
+  <script src="/js/tabs/dashboard.js?v=0.13.3"></script>
+  <script src="/js/tabs/services.js?v=0.13.3"></script>
+  <script src="/js/tabs/modules.js?v=0.13.3"></script>
+  <script src="/js/tabs/repo.js?v=0.13.3"></script>
+  <script src="/js/tabs/objects.js?v=0.13.3"></script>
+  <script src="/js/tabs/scripts.js?v=0.13.3"></script>
+  <script src="/js/tabs/structure.js?v=0.13.3"></script>
+  <script src="/js/tabs/files.js?v=0.13.3"></script>
+  <script src="/js/tabs/users.js?v=0.13.3"></script>
+  <script src="/js/tabs/analyzer.js?v=0.13.3"></script>
+  <script src="/js/tabs/backup.js?v=0.13.3"></script>
+  <script src="/js/serviceLog.js?v=0.13.3"></script>
+  <script src="/js/tabs/logs.js?v=0.13.3"></script>
+  <script src="/js/tabs/system.js?v=0.13.3"></script>
+  <script src="/js/tabs/settings.js?v=0.13.3"></script>
+  <script src="/js/core.js?v=0.13.3"></script>
 </body>
 </html>

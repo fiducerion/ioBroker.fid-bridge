@@ -273,8 +273,8 @@ body:not(.theme-loading) .ma-splash { display: none; }
   .dash-stats-bar { grid-template-columns: 1fr; gap: 6px; padding: 8px; }
   .dash-stat-val { font-size: 14px; }
 }
-.ma-obj-tree   { padding: 8px 10px; height: calc(100vh - 180px); min-height: 500px; overflow: auto; font-size: 19px; line-height: 1.55; }
-.ma-obj-detail { padding: 12px 16px; max-height: calc(100vh - 180px); min-height: 300px; overflow: auto; font-size: 16px; }
+.ma-obj-tree   { padding: 8px 10px; height: calc(100vh - 180px); min-height: 500px; overflow: auto; font-size: 13px; line-height: 1.45; }
+.ma-obj-detail { padding: 12px 16px; max-height: calc(100vh - 180px); min-height: 300px; overflow: auto; font-size: 13px; }
 @media (max-width: 1100px) {
   .ma-obj-tree   { height: 70vh; min-height: 300px; }
   .ma-obj-detail { max-height: 50vh; }
@@ -686,3 +686,92 @@ body.expert-mode .expert-only.ma-btn-block { display: flex !important; }
 .link-title { font-family: var(--ma-font-display); font-weight: 600; letter-spacing: 0.3px; font-size: 13px; }
 .link-sub { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--ma-muted); font-family: var(--ma-font-mono); }
 .link-arrow { color: var(--ma-accent); }
+
+/* ============================================================
+ * v0.13.6: Objects-Tab Layout-Toggles
+ * Klassen werden per JS auf <section data-tab="objects"> gesetzt:
+ *   .objs-side-hidden    -> linke Sidebar einklappen (auch Desktop)
+ *   .objs-toolbar-hidden -> Filterleiste einklappen
+ *   .objs-detail-hidden  -> Detail-Panel einklappen, Tree fullwidth
+ *   .objs-fullscreen     -> Stats-Strip + Top-Bar mit ausblenden
+ * ============================================================ */
+
+/* Sidebar einklappen auf Desktop */
+.ma-app:has(.ma-tabpage[data-tab="objects"].objs-side-hidden.active) {
+  grid-template-columns: 0 1fr;
+}
+.ma-app:has(.ma-tabpage[data-tab="objects"].objs-side-hidden.active) .ma-side {
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+/* Toolbar (Filterleiste) komplett einklappen */
+.ma-tabpage[data-tab="objects"].objs-toolbar-hidden .ma-toolbar,
+.ma-tabpage[data-tab="objects"].objs-toolbar-hidden .ma-obj-progress {
+  display: none !important;
+}
+
+/* v0.13.8: Detail-Panel komplett ausblenden -> Liste volle Breite.
+   Per Toggle-Button. Beim Auswaehlen eines Eintrags wird es wieder gezeigt. */
+.ma-tabpage[data-tab="objects"].objs-detail-hidden .ma-obj-layout {
+  grid-template-columns: 1fr;
+}
+.ma-tabpage[data-tab="objects"].objs-detail-hidden .ma-obj-detail-card {
+  display: none;
+}
+
+/* Fullscreen: Top-Bar und Stats-Strip auch weg */
+.ma-tabpage[data-tab="objects"].objs-fullscreen ~ * { display: none; }
+body.objs-fullscreen .ma-top,
+body.objs-fullscreen .ma-stats {
+  display: none !important;
+}
+body.objs-fullscreen .ma-app { grid-template-columns: 0 1fr; }
+body.objs-fullscreen .ma-side { transform: translateX(-100%); pointer-events: none; }
+
+/* Visueller "aktiv"-Indikator fuer die Toggle-Buttons */
+#objToggleSide.is-active,
+#objToggleToolbar.is-active,
+#objToggleDetail.is-active,
+#objToggleFullscreen.is-active {
+  background: var(--ma-accent);
+  color: var(--ma-bg);
+}
+
+/* Mehr Platz fuer Tree wenn alles eingeklappt */
+.ma-tabpage[data-tab="objects"].objs-toolbar-hidden.objs-detail-hidden .ma-obj-tree {
+  min-height: 70vh;
+  max-height: 80vh;
+}
+
+/* v0.13.6: Sparkline-Canvas im Dashboard fuer CPU/RAM */
+.dash-spark {
+  width: 100%;
+  height: 32px;
+  margin-top: 4px;
+  display: block;
+  opacity: 0.85;
+}
+
+/* v0.13.7: Tab-Badges im Menue (Updates, Notifications, Backup-Fail) */
+.ma-tab { position: relative; }
+.ma-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: auto;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--ma-font-display, sans-serif);
+  line-height: 1;
+}
+.ma-tab-badge-info { background: var(--ma-accent, #3b82f6); color: #fff; }
+.ma-tab-badge-warn { background: #f59e0b; color: #1a1a1a; }
+.ma-tab-badge-err  { background: #dc2626; color: #fff; }
+/* Badge soll rechtsbuendig sitzen */
+.ma-tab { display: flex; align-items: center; gap: 8px; }
+.ma-tab .ma-tab-label { flex: 1; }

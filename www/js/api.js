@@ -35,6 +35,8 @@
     themes:      () => req('GET',    '/api/themes'),
     systemInfo:  () => req('GET',    '/api/system/info'),
     systemHosts: () => req('GET',    '/api/system/hosts'),
+    redisStatus: () => req('GET',    '/api/system/redis-status'),
+    analyzerOverview: () => req('GET', '/api/analyzer/overview'),
     getSysConfig:  () => req('GET',  '/api/system/config'),
     saveSysConfig: (patch) => req('PUT', '/api/system/config', patch),
     getHost:    (id) => req('GET',  '/api/system/hosts/' + encodeURI(id)),

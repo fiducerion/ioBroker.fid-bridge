@@ -40,6 +40,74 @@
         global.MA.toast(u.toString(), 'info');
       });
     });
+
+    // v0.13.6: Layout-Toggles (Sidebar, Filter, Detail, Fullscreen)
+    initLayoutToggles();
+  }
+
+  // v0.13.6: Layout-Toggles fuer das Datenpunkte-Tab.
+  // States in localStorage damit beim naechsten Besuch das gewohnte Layout
+  // wieder hergestellt wird. Defaults: Detail eingeklappt, Toolbar eingeklappt
+  // (= Bernds Wunsch: max Platz fuers Tree, beim ersten Besuch).
+  function initLayoutToggles() {
+    const section = document.querySelector('.ma-tabpage[data-tab="objects"]');
+    if (!section) return;
+    const LS_PREFIX = 'fid-bridge:objects-layout:';
+    const DEFAULTS = {
+      'side-hidden':       false,
+      'toolbar-hidden':    true,   // Bernd-Wunsch: Filter default zu
+      'detail-hidden':     false,  // v0.13.7: Detail sichtbar lassen - man muss Werte aendern koennen!
+      'fullscreen':        false
+    };
+    function getState(key) {
+      const raw = localStorage.getItem(LS_PREFIX + key);
+      if (raw === '1') return true;
+      if (raw === '0') return false;
+      return DEFAULTS[key];
+    }
+    function setStateLs(key, val) {
+      localStorage.setItem(LS_PREFIX + key, val ? '1' : '0');
+    }
+    function applyOne(key, btnId, cls) {
+      const on = getState(key);
+      // v0.13.8: 'detail-hidden' blendet das Detail-Panel KOMPLETT aus (Liste
+      // bekommt volle Breite). Das ist der Toggle-Button. Zusaetzlich kann man
+      // das Detail-Panel ueber den Header-Klick nur zuklappen (data-collapsed)
+      // ohne es ganz auszublenden - das ist eine separate Funktion.
+      if (key === 'detail-hidden') {
+        section.classList.toggle('objs-detail-hidden', on);
+        const btn = document.getElementById(btnId);
+        if (btn) btn.classList.toggle('is-active', on);
+        return;
+      }
+      section.classList.toggle('objs-' + key, on);
+      if (key === 'fullscreen') document.body.classList.toggle('objs-fullscreen', on);
+      const btn = document.getElementById(btnId);
+      if (btn) btn.classList.toggle('is-active', on);
+    }
+    function bindToggle(key, btnId) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cur = getState(key);
+        setStateLs(key, !cur);
+        applyOne(key, btnId);
+      });
+      applyOne(key, btnId);
+    }
+    bindToggle('side-hidden',    'objToggleSide');
+    bindToggle('toolbar-hidden', 'objToggleToolbar');
+    bindToggle('detail-hidden',  'objToggleDetail');
+    bindToggle('fullscreen',     'objToggleFullscreen');
+
+    // ESC verlaesst Fullscreen
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && getState('fullscreen')) {
+        setStateLs('fullscreen', false);
+        applyOne('fullscreen', 'objToggleFullscreen');
+      }
+    });
   }
 
   async function exportTree() {
@@ -518,6 +586,19 @@
     render();
     const det = $('objDetail');
     if (!det) return;
+    // v0.13.8: Wenn Detail-Panel komplett ausgeblendet (objs-detail-hidden) oder
+    // nur zugeklappt war, beim Auswaehlen wieder zeigen damit man Werte sieht.
+    const section = document.querySelector('.ma-tabpage[data-tab="objects"]');
+    if (section && section.classList.contains('objs-detail-hidden')) {
+      section.classList.remove('objs-detail-hidden');
+      const btn = document.getElementById('objToggleDetail');
+      if (btn) btn.classList.remove('is-active');
+      try { localStorage.setItem('fid-bridge:objects-layout:detail-hidden', '0'); } catch (e) {}
+    }
+    const detailCard = document.getElementById('objDetailCard');
+    if (detailCard && detailCard.getAttribute('data-collapsed') === 'true') {
+      detailCard.setAttribute('data-collapsed', 'false');
+    }
     det.innerHTML = 'Lade...';
 
     const [obj, st] = await Promise.all([

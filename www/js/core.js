@@ -154,6 +154,71 @@
       t.refresh().catch(e => global.MA.toast('Refresh-Fehler: ' + e.message, 'bad'));
     }
     updateClientStat();
+    updateBadges();
+  }
+
+  // v0.13.7: Menue-Badges aktualisieren (Adapter-Updates, Notifications, Backup-Fail).
+  // Laeuft unabhaengig vom aktiven Tab damit man Updates auch sieht wenn man
+  // gerade woanders ist.
+  let _badgesRunning = false;
+  async function updateBadges() {
+    if (_badgesRunning) return;
+    if (!global.MA.ui || typeof global.MA.ui.setTabBadge !== 'function') return;
+    _badgesRunning = true;
+    try {
+      // 1) Adapter-Updates -> Badge an REPOSITORY
+      try {
+        const repo = await global.MA.api.listRepo();
+        const items = (repo && repo.items) || repo || [];
+        const updates = Array.isArray(items) ? items.filter(x => x && x.updateAvailable).length : 0;
+        global.MA.ui.setTabBadge('repo', updates, 'warn');
+      } catch (e) { /* ignore */ }
+
+      // 2) Offene Notifications -> Badge an UEBERSICHT
+      try {
+        const n = await global.MA.api.listNotifications();
+        if (n && !n.disabled) {
+          const cnt = (n.items || []).length;
+          // Schwere bestimmen: wenn irgendeine alert/error -> err sonst info
+          const hasAlert = (n.items || []).some(it => it.severity === 'alert' || it.severity === 'error');
+          global.MA.ui.setTabBadge('dashboard', cnt, hasAlert ? 'err' : 'info');
+        }
+      } catch (e) { /* ignore */ }
+
+      // 3) Backup-Status -> Badge an BACKUP.
+      // ioBroker meldet Backup-Fehler als Notification (scope backitup/system).
+      // Plus: wenn das neueste Backup-File aelter als 48h ist -> Warnung.
+      try {
+        let backupBadge = 0, backupKind = 'info';
+        // a) Notification mit backup-Bezug?
+        const n2 = await global.MA.api.listNotifications();
+        if (n2 && !n2.disabled) {
+          const backupNotif = (n2.items || []).some(it =>
+            /backup|backitup/i.test((it.category || '') + ' ' + (it.scope || '') + ' ' + (it.description || '')));
+          if (backupNotif) { backupBadge = '!'; backupKind = 'err'; }
+        }
+        // b) Neuestes Backup zu alt?
+        if (!backupBadge) {
+          const b = await global.MA.api.listBackups();
+          const files = (b && b.files) || [];
+          if (files.length) {
+            // files koennen {name, mtime} oder nur Strings sein
+            let newest = 0;
+            files.forEach(f => {
+              const t = (f && (f.modified || f.mtime)) ? new Date(f.modified || f.mtime).getTime() : 0;
+              if (t > newest) newest = t;
+            });
+            if (newest > 0) {
+              const ageH = (Date.now() - newest) / 3600000;
+              if (ageH > 48) { backupBadge = '!'; backupKind = 'warn'; }
+            }
+          }
+        }
+        global.MA.ui.setTabBadge('backup', backupBadge, backupKind);
+      } catch (e) { /* ignore */ }
+    } finally {
+      _badgesRunning = false;
+    }
   }
 
   async function updateClientStat() {

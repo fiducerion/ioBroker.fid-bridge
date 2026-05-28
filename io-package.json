@@ -1,8 +1,24 @@
 {
   "common": {
     "name": "fid-bridge",
-    "version": "0.13.4",
+    "version": "0.13.8",
     "news": {
+      "0.13.8": {
+        "de": "v0.13.8: Datenpunkte Detail-Panel Verhalten.\nDer Detail-Toggle-Button blendet das Detail-Panel jetzt KOMPLETT aus (Liste bekommt volle Breite) statt es nur zuzuklappen. Beim Auswaehlen eines Eintrags im Tree wird es automatisch wieder eingeblendet, damit man Werte sehen und aendern kann. Zusaetzlich kann das Panel ueber Klick auf den DETAIL-Header zugeklappt werden (ohne ganz auszublenden).",
+        "en": "v0.13.8: detail panel toggle fully hides (list fullwidth), re-shows on select."
+      },
+      "0.13.7": {
+        "de": "v0.13.7: Fixes fuer Dashboard + Datenpunkte + Menue-Badges.\n(1) Redis-Karte: liest jetzt Host/Port/Passwort aus system.config     (vorher hart 127.0.0.1 ohne Auth -> nur Ping, keine Details).     Zeigt Version, Memory, Clients, Ops/sec, CPU, Cache-Hit/Miss.     Bei Ping-ok-aber-Info-leer: Diagnose statt leer.\n(2) Datenpunkte: Schrift kleiner (Tree 19px->13px, Detail 16px->    13px) - war auf Desktop zu gross.\n(3) Datenpunkte Detail-Panel: jetzt AUFKLAPPBAR statt versteckt.     Default sichtbar, per Header-Klick oder Toggle einklappbar.     Beim Auswaehlen eines Eintrags klappt es automatisch auf.     Werte aendern geht wieder!\n(4) Menue-Badges NEU: Adapter-Updates (Zahl an REPOSITORY),     offene Notifications (Zahl an UEBERSICHT), Backup-Fehler/zu-alt     (! an BACKUP). Aktualisierung im Refresh-Zyklus.",
+        "en": "v0.13.7: redis details fix, smaller objects font, collapsible detail, menu badges."
+      },
+      "0.13.6": {
+        "de": "v0.13.6: Dashboard-Ueberarbeitung + Datenpunkte-Layout.\nTab Uebersicht:\n(1) CPU/RAM jetzt mit Sparkline-Graphen (60 Punkte, ca 5min     Verlauf, farblich nach Wert).\n(2) NEUE Karte Redis: Status, Version, Uptime, Memory, Clients,     CPU, Cache-Hit/Miss. Per redis-cli abgefragt wenn lokal     verfuegbar.\n(3) NEUE Karte Analyzer-Live: Heute/Gestern/Letzte-Stunde     Errors+Warns, Top-5 Patterns.\n(4) NEUE Karte Connectivity (ConnectivityGuard): Status,     Outage-Liste 24h, htmlCard wenn Script aktiv. Klappbar.\n(5) NEUE Karte Script-Health (SysHealthAmpel): Modus +     Heartbeat-Uebersicht. Klappbar.\nTab Datenpunkte (ioBroker-Admin-aehnlich):\n(6) Neue Layout-Toggles oben rechts: Menue/Filter/Detail/    Fullscreen ein- und ausklappbar.\n(7) Filter-Toolbar und Detail-Panel default eingeklappt -     max Platz fuers Objects-Tree.\n(8) State persistent in localStorage.\n(9) ESC verlaesst Fullscreen.",
+        "en": "v0.13.6: dashboard rework + objects layout toggles."
+      },
+      "0.13.5": {
+        "de": "v0.13.5: Pre-Publish Vorbereitung fuer npm.\n- extIcon URL auf fiducerion-GitHub gesetzt (vorher Platzhalter USER).\n- titleLang/desc/title/license in io-package.json common ergaenzt.\n- package.json scripts.test als Stub (echo no tests).\n- update.sh aus files-Liste entfernt (war ein nicht vorhandener Pfad).\nKeine funktionalen Aenderungen am Adapter-Code.",
+        "en": "v0.13.5: Pre-publish cleanup for npm."
+      },
       "0.13.4": {
         "de": "v0.13.4: Fuenf gezielte Fehlerbehebungen.\n(1) Backup-Plan funktionierte nicht:\n    - detectHost() wurde synchron ohne adapter-Arg aufgerufen und lieferte Promise statt Hostname-String -> 'Parameter hostName needs to be of type string'.\n    - scheduleNext las stale-Snapshot statt Adapter-Objekt -> 'Plan aus' obwohl gespeichert.\n    - Save-Endpoint await scheduleNext, alles direkt synchron.\n(2) Datenpunkte-Suche: wenn ein Device/Channel matcht, werden jetzt ALLE States darunter mit-eingeblendet (wie in admin).\n(3) Light-Themes Button-Hover: Text-Farbe explizit gesetzt, Hover-Hintergrund auf panel-2 statt panel (verhindert weiss-auf-weiss).\n(4) Automationen: Skripte sind jetzt anklickbar im Baum, markiertes Skript zeigt Akzent-Border + farbigen Namen. Letztes markiertes Skript persistiert in localStorage.\n(5) Skript-Editor: Neuer Button '↗ in Admin' oeffnet das Skript im nativen iobroker.admin JavaScript-Tab in neuem Browser-Tab. Backend ermittelt die Admin-URL.",
         "en": "v0.13.4: backup hostName bug, schedule reading wrong cfg, smart device search, light theme button readability, selectable scripts, open-in-admin button."
@@ -208,7 +224,7 @@
     "main": "main.js",
     "icon": "fid-bridge.png",
     "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/USER/iobroker.fid-bridge/main/admin/fid-bridge.png",
+    "extIcon": "https://raw.githubusercontent.com/fiducerion/ioBroker.fid-bridge/main/admin/fid-bridge.png",
     "readme": "https://github.com/fiducerion/ioBroker.fid-bridge/blob/main/README.md",
     "loglevel": "info",
     "mode": "daemon",

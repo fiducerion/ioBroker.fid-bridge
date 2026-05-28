@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/css/shell.css?v=0.13.4" />
-  <link rel="stylesheet" id="themeStyle" href="/themes/lcars/theme.css?v=0.13.4" />
+  <link rel="stylesheet" href="/css/shell.css?v=0.13.8" />
+  <link rel="stylesheet" id="themeStyle" href="/themes/lcars/theme.css?v=0.13.8" />
 </head>
 <body class="theme-loading">
 
@@ -51,7 +51,7 @@
 
         <button class="ma-btn ma-btn-ghost ma-btn-block" id="logoutBtn" hidden>Abmelden</button>
 
-        <div class="ma-version" id="appVersion">v0.12.1</div>
+        <div class="ma-version" id="appVersion">v0.13.8</div>
       </div>
     </aside>
 
@@ -81,8 +81,8 @@
         <!-- Dashboard -->
         <section class="ma-tabpage active" data-tab="dashboard">
           <div class="dash-stats-bar" id="dashStatsBar">
-            <div class="dash-stat" data-key="cpu">    <div class="dash-stat-lbl">CPU</div>    <div class="dash-stat-val" id="statCpu">—</div>    <div class="dash-stat-bar"><div class="dash-stat-fill" id="statCpuFill"></div></div></div>
-            <div class="dash-stat" data-key="ram">    <div class="dash-stat-lbl">RAM</div>    <div class="dash-stat-val" id="statRam">—</div>    <div class="dash-stat-bar"><div class="dash-stat-fill" id="statRamFill"></div></div></div>
+            <div class="dash-stat" data-key="cpu">    <div class="dash-stat-lbl">CPU</div>    <div class="dash-stat-val" id="statCpu">—</div>    <div class="dash-stat-bar"><div class="dash-stat-fill" id="statCpuFill"></div></div>  <canvas class="dash-spark" id="sparkCpu"  width="200" height="32"></canvas></div>
+            <div class="dash-stat" data-key="ram">    <div class="dash-stat-lbl">RAM</div>    <div class="dash-stat-val" id="statRam">—</div>    <div class="dash-stat-bar"><div class="dash-stat-fill" id="statRamFill"></div></div>  <canvas class="dash-spark" id="sparkRam"  width="200" height="32"></canvas></div>
             <div class="dash-stat" data-key="disk">   <div class="dash-stat-lbl">Disk</div>   <div class="dash-stat-val" id="statDisk">—</div>   <div class="dash-stat-bar"><div class="dash-stat-fill" id="statDiskFill"></div></div></div>
             <div class="dash-stat" data-key="uptime"> <div class="dash-stat-lbl">Uptime</div> <div class="dash-stat-val" id="statUptime">—</div></div>
             <div class="dash-stat" data-key="ip">     <div class="dash-stat-lbl">IP</div>     <div class="dash-stat-val" id="statIp">—</div></div>
@@ -105,6 +105,22 @@
           <div class="ma-card" data-collapsed="true">
             <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">WEB-ZUGÄNGE</div></div>
             <div class="ma-card-body link-grid" id="dashLinks">Lade...</div>
+          </div>
+          <div class="ma-card" data-collapsed="false">
+            <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">REDIS</div><div class="ma-card-badges" id="dashRedisBadges"></div></div>
+            <div class="ma-card-body" id="dashRedis">Lade...</div>
+          </div>
+          <div class="ma-card" data-collapsed="false">
+            <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">ANALYZER (LIVE)</div><div class="ma-card-badges" id="dashAnalyzerBadges"></div></div>
+            <div class="ma-card-body" id="dashAnalyzer">Lade...</div>
+          </div>
+          <div class="ma-card" data-collapsed="false">
+            <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">CONNECTIVITY (INTERNET-WATCHDOG)</div><div class="ma-card-badges" id="dashConnBadges"></div></div>
+            <div class="ma-card-body" id="dashConnectivity">Lade...</div>
+          </div>
+          <div class="ma-card" data-collapsed="false">
+            <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">SCRIPT HEALTH (HEARTBEAT-AMPEL)</div><div class="ma-card-badges" id="dashHealthBadges"></div></div>
+            <div class="ma-card-body" id="dashHealth">Lade...</div>
           </div>
           <div class="ma-card" data-collapsed="true">
             <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">LIVE PROTOKOLL</div><div class="ma-card-badges"><span class="ma-pill" id="logStatusBadge">idle</span></div></div>
@@ -198,9 +214,18 @@
 
         <!-- Datenpunkte -->
         <section class="ma-tabpage" data-tab="objects">
-          <div class="ma-card">
-            <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">DATENPUNKTE</div></div>
-            <div class="ma-toolbar">
+          <div class="ma-card ma-obj-toolbar-card" id="objToolbarCard">
+            <div class="ma-card-head">
+              <div class="ma-card-bracket"></div>
+              <div class="ma-card-title">DATENPUNKTE</div>
+              <div class="ma-card-badges">
+                <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objToggleSide" title="Seitenleiste ein-/ausblenden">◧ Menü</button>
+                <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objToggleToolbar" title="Filterleiste ein-/ausblenden">⚙ Filter</button>
+                <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objToggleDetail" title="Detail-Panel ein-/ausblenden">▤ Detail</button>
+                <button class="ma-btn ma-btn-ghost ma-btn-xs" id="objToggleFullscreen" title="Vollbild umschalten">⛶ Vollbild</button>
+              </div>
+            </div>
+            <div class="ma-toolbar" id="objToolbar">
               <input class="ma-input" id="objPrefix" placeholder="Prefix, z.B. 0_userdata.0 oder system.adapter" />
               <input class="ma-input" id="objFilter" placeholder="Filter (Name oder ID enthält...)" />
               <select class="ma-select" id="objType">
@@ -244,7 +269,7 @@
               <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">LISTE</div><div class="ma-card-badges" id="objCount"></div></div>
               <div class="ma-obj-tree" id="objTree">Noch nichts geladen.</div>
             </div>
-            <div class="ma-card ma-obj-detail-card">
+            <div class="ma-card ma-obj-detail-card" data-collapsed="false" id="objDetailCard">
               <div class="ma-card-head"><div class="ma-card-bracket"></div><div class="ma-card-title">DETAIL</div>
                 <div class="ma-card-badges"><button class="ma-btn ma-btn-ghost" id="objCopyLink">Link kopieren</button></div>
               </div>

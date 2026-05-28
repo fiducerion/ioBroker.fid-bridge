@@ -38,10 +38,30 @@
       const b = document.createElement('button');
       b.className = 'ma-tab' + (t.id === activeId ? ' active' : '');
       b.dataset.tab = t.id;
-      b.innerHTML = `<span class="ma-tab-num">${t.num}</span><span class="ma-tab-label">${t.label}</span>`;
+      b.innerHTML = `<span class="ma-tab-num">${t.num}</span><span class="ma-tab-label">${t.label}</span><span class="ma-tab-badge" id="tabBadge-${t.id}" hidden></span>`;
       b.addEventListener('click', () => activate(t.id, onChange));
       nav.appendChild(b);
     }
+  }
+
+  // v0.13.7: Badge an einem Tab setzen (Zahl oder Warnung).
+  //   setTabBadge('repo', 2)            -> blaue 2
+  //   setTabBadge('repo', 2, 'warn')    -> orange 2
+  //   setTabBadge('backup', '!', 'err') -> rotes !
+  //   setTabBadge('repo', 0)            -> Badge weg
+  function setTabBadge(tabId, value, kind) {
+    const el = document.getElementById('tabBadge-' + tabId);
+    if (!el) return;
+    const num = (typeof value === 'number') ? value : (value ? String(value) : '');
+    if (!num || num === '0') {
+      el.hidden = true;
+      el.textContent = '';
+      el.className = 'ma-tab-badge';
+      return;
+    }
+    el.hidden = false;
+    el.textContent = num;
+    el.className = 'ma-tab-badge ma-tab-badge-' + (kind || 'info');
   }
 
   function activate(tabId, onChange) {
@@ -82,5 +102,5 @@
   }
 
   global.MA = global.MA || {};
-  global.MA.ui = { $, escapeHtml, setConn, buildTabs, activate, startClock, fmtVal };
+  global.MA.ui = { $, escapeHtml, setConn, buildTabs, activate, startClock, fmtVal, setTabBadge };
 })(window);
